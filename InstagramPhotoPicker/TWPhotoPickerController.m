@@ -10,6 +10,7 @@
 #import "TWPhotoPickerController.h"
 #import "TWPhotoCollectionViewCell.h"
 #import "TWImageScrollView.h"
+#import "TWAssetAction.h"
 
 @interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate>
 {
@@ -48,6 +49,13 @@
     return _assets;
 }
 
+- (NSArray *)additionalAssets {
+    if (_additionalAssets == nil) {
+        _additionalAssets = [NSArray array];
+    }
+    return _additionalAssets;
+}
+
 - (ALAssetsLibrary *)assetsLibrary {
     if (_assetsLibrary == nil) {
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
@@ -82,6 +90,7 @@
                 UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
                 [self.imageScrollView displayImage:image];
             }
+            [self loadExtraActions];
             [self.collectionView reloadData];
         }
         
@@ -92,6 +101,14 @@
         NSLog(@"Load Photos Error: %@", error);
     }];
     
+}
+
+- (void)loadExtraActions {
+    if(self.additionalAssets && self.additionalAssets.count > 0) {
+        for(NSObject *actions in self.additionalAssets) {
+            [self.assets insertObject:actions atIndex:0];
+        }
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -299,7 +316,13 @@
     static NSString *CellIdentifier = @"TWPhotoCollectionViewCell";
     
     TWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.imageView.image = [UIImage imageWithCGImage:[[self.assets objectAtIndex:indexPath.row] thumbnail]];
+    
+    if([self.assets[indexPath.row] isKindOfClass:[TWAssetAction class]]) {
+        TWAssetAction *action = ((TWAssetAction*)self.assets[indexPath.row]);
+        cell.imageView.image = action.thumbnail? action.thumbnail : action.assetImage;
+    } else {
+        cell.imageView.image = [UIImage imageWithCGImage:[[self.assets objectAtIndex:indexPath.row] thumbnail]];
+    }
     
     return cell;
 }
@@ -308,12 +331,29 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if([[self.assets objectAtIndex:indexPath.row] isKindOfClass:[TWAssetAction class]]) {
+        TWAssetAction *action = self.assets[indexPath.row];
+        
+        /**
+         If these is a block defined we use it.
+         otherwise we display the original asset image.
+         */
+        if(action.simpleBlock) {
+            action.simpleBlock();
+        } else {
+            [self.imageScrollView displayImage:action.assetImage];
+            if (self.topView.frame.origin.y != 0) {
+                [self tapGestureAction:nil];
+            }
+        }
+    } else {
 
-    ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
-    UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
-    [self.imageScrollView displayImage:image];
-    if (self.topView.frame.origin.y != 0) {
-        [self tapGestureAction:nil];
+        ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
+        UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
+        [self.imageScrollView displayImage:image];
+        if (self.topView.frame.origin.y != 0) {
+            [self tapGestureAction:nil];
+        }
     }
 }
 

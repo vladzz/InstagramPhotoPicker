@@ -17,6 +17,7 @@
 		0D7590061A30016A0040D2AF /* TWPhotoPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7590051A30016A0040D2AF /* TWPhotoPickerController.m */; };
 		0DB25BDC1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB25BDB1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m */; };
 		0DB25BDF1A305B850013AF4B /* TWImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */; };
+		1C0280321A80A92A003B6F6A /* TWAssetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0280311A80A92A003B6F6A /* TWAssetAction.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,8 @@
 		0DB25BDB1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWPhotoCollectionViewCell.m; sourceTree = "<group>"; };
 		0DB25BDD1A305B850013AF4B /* TWImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWImageScrollView.h; sourceTree = "<group>"; };
 		0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWImageScrollView.m; sourceTree = "<group>"; };
+		1C0280301A80A92A003B6F6A /* TWAssetAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWAssetAction.h; sourceTree = "<group>"; };
+		1C0280311A80A92A003B6F6A /* TWAssetAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWAssetAction.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +141,8 @@
 				0DB25BDB1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m */,
 				0DB25BDD1A305B850013AF4B /* TWImageScrollView.h */,
 				0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */,
+				1C0280301A80A92A003B6F6A /* TWAssetAction.h */,
+				1C0280311A80A92A003B6F6A /* TWAssetAction.m */,
 			);
 			name = PhotoPicker;
 			sourceTree = "<group>";
@@ -242,6 +247,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C0280321A80A92A003B6F6A /* TWAssetAction.m in Sources */,
 				0DB25BDF1A305B850013AF4B /* TWImageScrollView.m in Sources */,
 				0D758FE71A2FFFF60040D2AF /* ViewController.m in Sources */,
 				0D758FE41A2FFFF60040D2AF /* AppDelegate.m in Sources */,
