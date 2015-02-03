@@ -13,6 +13,8 @@
 {
     CGSize _imageSize;
 }
+
+@property(nonatomic, strong, readwrite) NSURL *assetURL;
 @property (strong, nonatomic) UIImageView *imageView;
 @end
 
@@ -110,8 +112,10 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
 }
 
 
-- (void)displayImage:(UIImage *)image
+- (void)displayImage:(UIImage *)image andAssetURL:(NSURL*) assetURL
 {
+    //Set the asset URL
+    self.assetURL = assetURL;
     // clear the previous image
     [self.imageView removeFromSuperview];
     self.imageView = nil;

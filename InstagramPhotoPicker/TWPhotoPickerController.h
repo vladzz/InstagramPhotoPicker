@@ -16,8 +16,14 @@
  */
 @property (nonatomic, strong) NSArray *additionalAssets;
 
-@property (nonatomic, copy) void(^cropBlock)(UIImage *image);
+@property (nonatomic, copy) void(^cropBlock)(UIImage *image, NSURL *originalAssetURL);
 
 @property (nonatomic, assign, getter=isNotFullScreenMode) BOOL notFullScreenMode;
+
+/**
+ This property represents an image we want to pre-select from the catalog when
+ first visiting it.
+ */
+@property (nonatomic, strong) NSURL *imagePreselectURL;
 
 @end

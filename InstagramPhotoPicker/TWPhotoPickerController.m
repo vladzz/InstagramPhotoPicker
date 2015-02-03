@@ -30,6 +30,7 @@
 
 - (void)loadView {
     [super loadView];
+    
     self.view.backgroundColor = [UIColor blackColor];
     
     [self.view addSubview:self.topView];
@@ -65,9 +66,21 @@
 
 - (void)loadPhotos {
     
+    __block NSURL *blockImagePreselectURL = self.imagePreselectURL;
+    
     ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
         
         if (result) {
+            NSURL *assetURL = [result valueForProperty:ALAssetPropertyAssetURL];
+            
+            //We pre-select an image if we have used one before
+            if(blockImagePreselectURL && assetURL) {
+                if([self.imagePreselectURL isEqual:assetURL]) {
+                    UIImage *image = [UIImage imageWithCGImage:result.defaultRepresentation.fullResolutionImage scale:result.defaultRepresentation.scale orientation:(UIImageOrientation)result.defaultRepresentation.orientation];
+                    [self.imageScrollView displayImage:image andAssetURL:[result valueForProperty:ALAssetPropertyAssetURL]];
+                }
+            }
+            
             [self.assets insertObject:result atIndex:0];
         }
         
@@ -87,8 +100,11 @@
         if (group == nil) {
             if (self.assets.count) {
                 ALAsset * asset = [self.assets objectAtIndex:0];
-                UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
-                [self.imageScrollView displayImage:image];
+                
+                if(!self.imagePreselectURL) {
+                    UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
+                    [self.imageScrollView displayImage:image andAssetURL:[asset valueForProperty:ALAssetPropertyAssetURL]];
+                }
             }
             [self loadExtraActions];
             [self.collectionView reloadData];
@@ -202,6 +218,7 @@
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.backgroundColor = [UIColor clearColor];
+        _collectionView.allowsMultipleSelection = NO;
         
         [_collectionView registerClass:[TWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"TWPhotoCollectionViewCell"];
         
@@ -229,8 +246,8 @@
 }
 
 - (void)cropAction {
-    if (self.cropBlock) {
-        self.cropBlock(self.imageScrollView.capture);
+    if (self.cropBlock && !(self.imagePreselectURL && [self.imagePreselectURL isEqual:self.imageScrollView.assetURL])) {
+        self.cropBlock(self.imageScrollView.capture, self.imageScrollView.assetURL);
     }
     [self backAction];
 }
@@ -321,6 +338,11 @@
         TWAssetAction *action = ((TWAssetAction*)self.assets[indexPath.row]);
         cell.imageView.image = action.thumbnail? action.thumbnail : action.assetImage;
     } else {
+//        ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
+//        NSURL *assetURL = [asset valueForProperty:ALAssetPropertyAssetURL];
+//        if([self.imagePreselectURL isEqual:assetURL]) {
+//            [self.collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+//        }
         cell.imageView.image = [UIImage imageWithCGImage:[[self.assets objectAtIndex:indexPath.row] thumbnail]];
     }
     
@@ -328,7 +350,6 @@
 }
 
 #pragma mark - Collection View Delegate
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if([[self.assets objectAtIndex:indexPath.row] isKindOfClass:[TWAssetAction class]]) {
@@ -341,7 +362,7 @@
         if(action.simpleBlock) {
             action.simpleBlock();
         } else {
-            [self.imageScrollView displayImage:action.assetImage];
+            [self.imageScrollView displayImage:action.assetImage andAssetURL:nil];
             if (self.topView.frame.origin.y != 0) {
                 [self tapGestureAction:nil];
             }
@@ -350,16 +371,11 @@
 
         ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
         UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
-        [self.imageScrollView displayImage:image];
+        [self.imageScrollView displayImage:image andAssetURL:[asset valueForProperty:ALAssetPropertyAssetURL]];
         if (self.topView.frame.origin.y != 0) {
             [self tapGestureAction:nil];
         }
     }
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {

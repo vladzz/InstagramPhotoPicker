@@ -10,7 +10,9 @@
 
 @interface TWImageScrollView : UIScrollView
 
-- (void)displayImage:(UIImage *)image;
+@property(nonatomic, strong, readonly) NSURL *assetURL;
+
+- (void)displayImage:(UIImage *)image andAssetURL:(NSURL*) assetURL;
 
 - (UIImage *)capture;
 
