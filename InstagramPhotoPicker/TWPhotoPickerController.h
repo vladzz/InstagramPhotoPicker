@@ -18,4 +18,6 @@
 
 @property (nonatomic, copy) void(^cropBlock)(UIImage *image);
 
+@property (nonatomic, assign, getter=isNotFullScreenMode) BOOL notFullScreenMode;
+
 @end

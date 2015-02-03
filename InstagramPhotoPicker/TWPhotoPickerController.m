@@ -117,7 +117,7 @@
 
 - (UIView *)topView {
     if (_topView == nil) {
-        CGFloat handleHeight = 44.0f;
+        CGFloat handleHeight = 44.0f + (self.isNotFullScreenMode? [UIApplication sharedApplication].statusBarFrame.size.height : 0.0f);
         CGRect rect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetWidth(self.view.bounds)+handleHeight*2);
         self.topView = [[UIView alloc] initWithFrame:rect];
         self.topView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
