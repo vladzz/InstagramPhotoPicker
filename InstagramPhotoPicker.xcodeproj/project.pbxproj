@@ -18,6 +18,7 @@
 		0DB25BDC1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB25BDB1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m */; };
 		0DB25BDF1A305B850013AF4B /* TWImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */; };
 		1C0280321A80A92A003B6F6A /* TWAssetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0280311A80A92A003B6F6A /* TWAssetAction.m */; };
+		2D89FB061A8ED36900A646D0 /* Resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D89FB051A8ED36900A646D0 /* Resources.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWImageScrollView.m; sourceTree = "<group>"; };
 		1C0280301A80A92A003B6F6A /* TWAssetAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWAssetAction.h; sourceTree = "<group>"; };
 		1C0280311A80A92A003B6F6A /* TWAssetAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWAssetAction.m; sourceTree = "<group>"; };
+		2D89FB051A8ED36900A646D0 /* Resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Resources.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				0D758FE61A2FFFF60040D2AF /* ViewController.m */,
 				0D758FE81A2FFFF60040D2AF /* Main.storyboard */,
 				0D758FEB1A2FFFF60040D2AF /* Images.xcassets */,
+				2D89FB051A8ED36900A646D0 /* Resources.xcassets */,
 				0D758FED1A2FFFF60040D2AF /* LaunchScreen.xib */,
 				0D758FDE1A2FFFF60040D2AF /* Supporting Files */,
 			);
@@ -228,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D758FEA1A2FFFF60040D2AF /* Main.storyboard in Resources */,
+				2D89FB061A8ED36900A646D0 /* Resources.xcassets in Resources */,
 				0D758FEF1A2FFFF60040D2AF /* LaunchScreen.xib in Resources */,
 				0D758FEC1A2FFFF60040D2AF /* Images.xcassets in Resources */,
 			);
