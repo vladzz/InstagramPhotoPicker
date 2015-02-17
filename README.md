@@ -21,7 +21,7 @@ With [CocoaPods](http://cocoapods.org/), add this line to your Podfile.
 
 ```objective-c
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
-    photoPicker.cropBlock = ^(UIImage *image) {
+    photoPicker.cropBlock = ^(UIImage *image, NSURL *originalAssetURL) {
         //do something
     };
     [self presentViewController:photoPicker animated:YES completion:NULL];
