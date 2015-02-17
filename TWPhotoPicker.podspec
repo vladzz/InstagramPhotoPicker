@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "TWPhotoPicker"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "A image picker like Instagram."
 
   s.description  = <<-DESC
@@ -15,7 +15,10 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '7.0'
   s.requires_arc = true
 
-  s.source_files  = "InstagramPhotoPicker/TWPhotoPickerController.{h,m}", "InstagramPhotoPicker/TWPhotoCollectionViewCell.{h,m}", "InstagramPhotoPicker/TWImageScrollView.{h,m}"
+  s.source_files  = "InstagramPhotoPicker/TWPhotoPickerController.{h,m}",
+                    "InstagramPhotoPicker/TWPhotoCollectionViewCell.{h,m}", 
+                    "InstagramPhotoPicker/TWImageScrollView.{h,m}",
+                    "InstagramPhotoPicker/TWAssetAction.{h,m}"
 
   s.frameworks = "Foundation", "CoreGraphics", "UIKit"
 
