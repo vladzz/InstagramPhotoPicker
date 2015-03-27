@@ -152,9 +152,9 @@
         [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:backBtn];
         
-        rect = CGRectMake((CGRectGetWidth(navView.bounds)-100)/2, 0, 100, CGRectGetHeight(navView.bounds));
+        rect = CGRectMake((CGRectGetWidth(navView.bounds)-200)/2, 0, 200, CGRectGetHeight(navView.bounds));
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
-        titleLabel.text = @"SELECT";
+        titleLabel.text = self.title;
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.textColor = [UIColor whiteColor];
