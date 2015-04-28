@@ -11,7 +11,7 @@ Present Image Picker like Instagram
 
 With [CocoaPods](http://cocoapods.org/), add this line to your Podfile.
 
-    pod 'TWPhotoPicker', '~> 1.0.0'
+    pod 'TWPhotoPicker', '~> 1.0.1'
 
 ## Screenshots
 ![Example](./Screenshots/Screenshot01.png "Example")
@@ -21,7 +21,7 @@ With [CocoaPods](http://cocoapods.org/), add this line to your Podfile.
 
 ```objective-c
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
-    photoPicker.cropBlock = ^(UIImage *image) {
+    photoPicker.cropBlock = ^(UIImage *image, NSURL *originalAssetURL) {
         //do something
     };
     [self presentViewController:photoPicker animated:YES completion:NULL];
@@ -36,6 +36,7 @@ With [CocoaPods](http://cocoapods.org/), add this line to your Podfile.
 
 - [wenzhaot](https://github.com/wenzhaot) ([@Wenzhaot](https://twitter.com/Wenzhaot))
 - [vladzz](https://github.com/vladzz) ([@vladzz](https://twitter.com/vladzz))
+- [mikeantonelli](https://github.com/mikeantonelli)
 
 ## License
 

@@ -14,10 +14,7 @@
 		0D758FEC1A2FFFF60040D2AF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D758FEB1A2FFFF60040D2AF /* Images.xcassets */; };
 		0D758FEF1A2FFFF60040D2AF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D758FED1A2FFFF60040D2AF /* LaunchScreen.xib */; };
 		0D758FFB1A2FFFF60040D2AF /* InstagramPhotoPickerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D758FFA1A2FFFF60040D2AF /* InstagramPhotoPickerTests.m */; };
-		0D7590061A30016A0040D2AF /* TWPhotoPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7590051A30016A0040D2AF /* TWPhotoPickerController.m */; };
-		0DB25BDC1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB25BDB1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m */; };
-		0DB25BDF1A305B850013AF4B /* TWImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */; };
-		1C0280321A80A92A003B6F6A /* TWAssetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0280311A80A92A003B6F6A /* TWAssetAction.m */; };
+		6FBC6990B2F4F73064455CB1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 920416C8A1B0C3F62452FA5E /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +49,9 @@
 		0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWImageScrollView.m; sourceTree = "<group>"; };
 		1C0280301A80A92A003B6F6A /* TWAssetAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWAssetAction.h; sourceTree = "<group>"; };
 		1C0280311A80A92A003B6F6A /* TWAssetAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWAssetAction.m; sourceTree = "<group>"; };
+		920416C8A1B0C3F62452FA5E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7D765C0250A0A464BB98E48 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		CC0CA6C05A3D31E889BE6D97 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FBC6990B2F4F73064455CB1 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +79,8 @@
 				0D758FDD1A2FFFF60040D2AF /* InstagramPhotoPicker */,
 				0D758FF71A2FFFF60040D2AF /* InstagramPhotoPickerTests */,
 				0D758FDC1A2FFFF60040D2AF /* Products */,
+				47C6F1E80EC10C35F5725E97 /* Pods */,
+				DAF2CA44C284FC25401416EE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -147,6 +150,23 @@
 			name = PhotoPicker;
 			sourceTree = "<group>";
 		};
+		47C6F1E80EC10C35F5725E97 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CC0CA6C05A3D31E889BE6D97 /* Pods.debug.xcconfig */,
+				C7D765C0250A0A464BB98E48 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		DAF2CA44C284FC25401416EE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				920416C8A1B0C3F62452FA5E /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -154,9 +174,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D758FFE1A2FFFF60040D2AF /* Build configuration list for PBXNativeTarget "InstagramPhotoPicker" */;
 			buildPhases = (
+				C57EFFB6E2E01AFEF41C88C6 /* Check Pods Manifest.lock */,
 				0D758FD71A2FFFF60040D2AF /* Sources */,
 				0D758FD81A2FFFF60040D2AF /* Frameworks */,
 				0D758FD91A2FFFF60040D2AF /* Resources */,
+				116B0C2CBE12075593EC026D /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -242,18 +264,47 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		116B0C2CBE12075593EC026D /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C57EFFB6E2E01AFEF41C88C6 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0D758FD71A2FFFF60040D2AF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C0280321A80A92A003B6F6A /* TWAssetAction.m in Sources */,
-				0DB25BDF1A305B850013AF4B /* TWImageScrollView.m in Sources */,
 				0D758FE71A2FFFF60040D2AF /* ViewController.m in Sources */,
 				0D758FE41A2FFFF60040D2AF /* AppDelegate.m in Sources */,
 				0D758FE11A2FFFF60040D2AF /* main.m in Sources */,
-				0DB25BDC1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m in Sources */,
-				0D7590061A30016A0040D2AF /* TWPhotoPickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +424,7 @@
 		};
 		0D758FFF1A2FFFF60040D2AF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC0CA6C05A3D31E889BE6D97 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -385,6 +437,7 @@
 		};
 		0D7590001A2FFFF60040D2AF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C7D765C0250A0A464BB98E48 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
