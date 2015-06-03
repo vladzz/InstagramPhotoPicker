@@ -6,9 +6,9 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   TWPhotoPicker:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
-  TWPhotoPicker: 768e878a10f841dc3160132200ec913e5d5c0813
+  TWPhotoPicker: 230b3c825fade5cc2584b3e85c5661a656befe21
 
-COCOAPODS: 0.35.0
+COCOAPODS: 0.37.2

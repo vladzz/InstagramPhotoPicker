@@ -41,14 +41,6 @@
 		0D758FF41A2FFFF60040D2AF /* InstagramPhotoPickerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InstagramPhotoPickerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D758FF91A2FFFF60040D2AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D758FFA1A2FFFF60040D2AF /* InstagramPhotoPickerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InstagramPhotoPickerTests.m; sourceTree = "<group>"; };
-		0D7590041A30016A0040D2AF /* TWPhotoPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWPhotoPickerController.h; sourceTree = "<group>"; };
-		0D7590051A30016A0040D2AF /* TWPhotoPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWPhotoPickerController.m; sourceTree = "<group>"; };
-		0DB25BDA1A303AFB0013AF4B /* TWPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWPhotoCollectionViewCell.h; sourceTree = "<group>"; };
-		0DB25BDB1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWPhotoCollectionViewCell.m; sourceTree = "<group>"; };
-		0DB25BDD1A305B850013AF4B /* TWImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWImageScrollView.h; sourceTree = "<group>"; };
-		0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWImageScrollView.m; sourceTree = "<group>"; };
-		1C0280301A80A92A003B6F6A /* TWAssetAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWAssetAction.h; sourceTree = "<group>"; };
-		1C0280311A80A92A003B6F6A /* TWAssetAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWAssetAction.m; sourceTree = "<group>"; };
 		920416C8A1B0C3F62452FA5E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7D765C0250A0A464BB98E48 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		CC0CA6C05A3D31E889BE6D97 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -96,7 +88,6 @@
 		0D758FDD1A2FFFF60040D2AF /* InstagramPhotoPicker */ = {
 			isa = PBXGroup;
 			children = (
-				0DB25BE11A3071040013AF4B /* PhotoPicker */,
 				0D758FE21A2FFFF60040D2AF /* AppDelegate.h */,
 				0D758FE31A2FFFF60040D2AF /* AppDelegate.m */,
 				0D758FE51A2FFFF60040D2AF /* ViewController.h */,
@@ -133,21 +124,6 @@
 				0D758FF91A2FFFF60040D2AF /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		0DB25BE11A3071040013AF4B /* PhotoPicker */ = {
-			isa = PBXGroup;
-			children = (
-				0D7590041A30016A0040D2AF /* TWPhotoPickerController.h */,
-				0D7590051A30016A0040D2AF /* TWPhotoPickerController.m */,
-				0DB25BDA1A303AFB0013AF4B /* TWPhotoCollectionViewCell.h */,
-				0DB25BDB1A303AFB0013AF4B /* TWPhotoCollectionViewCell.m */,
-				0DB25BDD1A305B850013AF4B /* TWImageScrollView.h */,
-				0DB25BDE1A305B850013AF4B /* TWImageScrollView.m */,
-				1C0280301A80A92A003B6F6A /* TWAssetAction.h */,
-				1C0280311A80A92A003B6F6A /* TWAssetAction.m */,
-			);
-			name = PhotoPicker;
 			sourceTree = "<group>";
 		};
 		47C6F1E80EC10C35F5725E97 /* Pods */ = {

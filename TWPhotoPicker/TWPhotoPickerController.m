@@ -11,6 +11,7 @@
 #import "TWPhotoCollectionViewCell.h"
 #import "TWImageScrollView.h"
 #import "TWAssetAction.h"
+#import "TWPhoto.h"
 
 @interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate>
 {
@@ -81,7 +82,10 @@
                 }
             }
             
-            [self.assets insertObject:result atIndex:0];
+            TWPhoto *photo = [TWPhoto new];
+            photo.asset = result;
+            
+            [self.assets insertObject:photo atIndex:0];
         }
         
     };
@@ -99,11 +103,11 @@
         
         if (group == nil) {
             if (self.assets.count) {
-                ALAsset * asset = [self.assets objectAtIndex:0];
+                TWPhoto * asset = [self.assets objectAtIndex:0];
                 
                 if(!self.imagePreselectURL) {
-                    UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
-                    [self.imageScrollView displayImage:image andAssetURL:[asset valueForProperty:ALAssetPropertyAssetURL]];
+                    UIImage *image = asset.originalImage;
+                    [self.imageScrollView displayImage:image andAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL]];
                 }
             }
             [self loadExtraActions];
@@ -223,22 +227,6 @@
         _collectionView.allowsMultipleSelection = NO;
         
         [_collectionView registerClass:[TWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"TWPhotoCollectionViewCell"];
-        
-//        rect = CGRectMake(0, 0, 60, layout.sectionInset.top);
-//        UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-//        backBtn.frame = rect;
-//        [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
-//        [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
-//        [_collectionView addSubview:backBtn];
-//        
-//        rect = CGRectMake((CGRectGetWidth(_collectionView.bounds)-140)/2, 0, 140, layout.sectionInset.top);
-//        UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
-//        titleLabel.text = @"CAMERA ROLL";
-//        titleLabel.textAlignment = NSTextAlignmentCenter;
-//        titleLabel.backgroundColor = [UIColor clearColor];
-//        titleLabel.textColor = [UIColor whiteColor];
-//        titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
-//        [_collectionView addSubview:titleLabel];
     }
     return _collectionView;
 }
@@ -345,7 +333,7 @@
 //        if([self.imagePreselectURL isEqual:assetURL]) {
 //            [self.collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
 //        }
-        cell.imageView.image = [UIImage imageWithCGImage:[[self.assets objectAtIndex:indexPath.row] thumbnail]];
+        cell.imageView.image = [[self.assets objectAtIndex:indexPath.row] thumbnailImage];
     }
     
     return cell;
@@ -371,9 +359,9 @@
         }
     } else {
 
-        ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
-        UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:asset.defaultRepresentation.scale orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
-        [self.imageScrollView displayImage:image andAssetURL:[asset valueForProperty:ALAssetPropertyAssetURL]];
+        TWPhoto * asset = [self.assets objectAtIndex:indexPath.row];
+        UIImage *image = asset.originalImage;
+        [self.imageScrollView displayImage:image andAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL]];
         if (self.topView.frame.origin.y != 0) {
             [self tapGestureAction:nil];
         }
