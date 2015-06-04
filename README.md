@@ -5,13 +5,18 @@ InstagramPhotoPicker
 ![License](https://img.shields.io/cocoapods/l/TWPhotoPicker.svg)
 ![Platform](https://img.shields.io/cocoapods/p/TWPhotoPicker.svg)
 
+###TWInstagramPhotoPicker:###
 Present Image Picker like Instagram
+
+* lets you add custom actions to extend the picker
+* allows you to select different photo albums
 
 ## Installation
 
 With [CocoaPods](http://cocoapods.org/), add this line to your Podfile.
 
-    pod 'TWPhotoPicker', '~> 1.0.2'
+    pod 'TWPhotoPicker', '~> 1.0.2' or
+    pod 'TWPhotoPicker', :git => 'https://github.com/vladzz/InstagramPhotoPicker.git'
 
 ## Screenshots
 ![Example](./Screenshots/Screenshot01.png "Example")
