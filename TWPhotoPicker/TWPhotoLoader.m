@@ -27,12 +27,35 @@
     return loader;
 }
 
++ (void)loadAllPhotosInGroup:(ALAssetsGroup*) group andCompletion:(void (^)(NSArray *photos, NSError *error))completion {
+    [[TWPhotoLoader sharedLoader] setLoadBlock:completion];
+    [[TWPhotoLoader sharedLoader] startLoadingWithGroup:group];
+}
+
 + (void)loadAllPhotos:(void (^)(NSArray *photos, NSError *error))completion {
     [[TWPhotoLoader sharedLoader] setLoadBlock:completion];
     [[TWPhotoLoader sharedLoader] startLoading];
 }
 
+- (void)startLoadingWithGroup:(ALAssetsGroup*) group {
+    [self.allPhotos removeAllObjects];
+    ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
+        if (result) {
+            TWPhoto *photo = [TWPhoto new];
+            photo.asset = result;
+            [self.allPhotos insertObject:photo atIndex:0];
+        }
+        
+    };
+
+    [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
+    
+    self.loadBlock(self.allPhotos, nil);
+}
+
 - (void)startLoading {
+    [self.allPhotos removeAllObjects];
+    
     ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
         if (result) {
             TWPhoto *photo = [TWPhoto new];

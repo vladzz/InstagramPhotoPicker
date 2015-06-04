@@ -15,13 +15,13 @@
     if (self) {
         self.leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.leftButton setImage:[UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"] forState:UIControlStateNormal];
-//        self.leftButton.imageView.image = [UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"];
         self.leftButton.frame = CGRectMake(15.0f, 16.5f, 16.0f, 11.0f);
         
         self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, CGRectGetMidY(frame), frame.size.width, frame.size.height)];
         self.titleLabel.text = @"All photos";
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.titleLabel.textColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor blackColor];
         
         [self addSubview:self.titleLabel];
         [self addSubview:self.leftButton];

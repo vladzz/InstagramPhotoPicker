@@ -18,7 +18,6 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
 @interface TWPhotoCollectionViewController ()
 
 @property (strong, nonatomic) NSMutableArray *assets;
-@property (nonatomic, assign) id<TWPhotoCollectionDelegate> delegate;
 
 @end
 
@@ -42,6 +41,12 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
     [self loadPhotos];
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    self.view.frame = self.view.superview.bounds;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+}
+
 - (NSMutableArray *)assets {
     if (_assets == nil) {
         _assets = [[NSMutableArray alloc] init];
@@ -50,7 +55,7 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
 }
 
 - (void)loadPhotos {
-    [TWPhotoLoader loadAllPhotos:^(NSArray *photos, NSError *error) {
+    loadBlock photoBlock = ^(NSArray *photos, NSError *error) {
         if (!error) {
             self.assets = [NSMutableArray arrayWithArray:photos];
             if (self.assets.count) {
@@ -96,7 +101,14 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
         } else {
             NSLog(@"Load Photos Error: %@", error);
         }
-    }];
+        
+    };
+    
+    if(self.selectedAssetGroup) {
+        [TWPhotoLoader loadAllPhotosInGroup:self.selectedAssetGroup andCompletion:photoBlock];
+    } else {
+        [TWPhotoLoader loadAllPhotos:photoBlock];
+    }
     
 }
 
@@ -108,12 +120,19 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
     }
 }
 
+-(void)backButtonClicked {
+    if(self.delegate) {
+        [self.delegate didClickBackButton];
+    }
+}
+
 #pragma mark - Collection View Data Source
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellHeaderIdentifier = @"TWPhotoCollectionReusableView";
     
-    UICollectionReusableView *reusableview = [collectionView
-                                              dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:CellHeaderIdentifier forIndexPath:indexPath];
+    TWPhotoCollectionReusableView *reusableview = [collectionView
+                                              dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPhotoCollectionReusableView forIndexPath:indexPath];
+    
+    [reusableview.leftButton addTarget:self action:@selector(backButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     
     return reusableview;
 }
@@ -129,9 +148,7 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"TWPhotoCollectionViewCell";
-    
-    TWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+    TWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kPhotoCollectionViewCellIdentifier forIndexPath:indexPath];
     
     if([self.assets[indexPath.row] isKindOfClass:[TWAssetAction class]]) {
         TWAssetAction *action = ((TWAssetAction*)self.assets[indexPath.row]);

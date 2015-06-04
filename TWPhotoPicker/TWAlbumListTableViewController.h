@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+
+@protocol TWAlbumListTableViewDelegate <NSObject>
+
+-(void)albumSelected:(ALAssetsGroup*) assetGroup;
+
+@end
 
 @interface TWAlbumListTableViewController : UITableViewController
+
+@property(nonatomic, assign) id<TWAlbumListTableViewDelegate> delegate;
 
 @end

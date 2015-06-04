@@ -16,7 +16,7 @@
 #import "TWPhotoCollectionViewController.h"
 #import "TWAlbumListTableViewController.h"
 
-@interface TWPhotoPickerController ()<TWPhotoCollectionDelegate>
+@interface TWPhotoPickerController ()<TWPhotoCollectionDelegate, TWAlbumListTableViewDelegate>
 {
     CGFloat beginOriginY;
 }
@@ -31,6 +31,8 @@
 @property (strong, nonatomic) TWAlbumListTableViewController *albumListVC;
 
 @property (strong, nonatomic) TWPhotoCollectionViewController *photoCollectionVC;
+
+@property (nonatomic, weak) UIViewController *currentChildViewController;
 
 @end
 
@@ -47,7 +49,9 @@
     [self.view insertSubview:self.containerVC.view belowSubview:self.topView];
     
     [self.containerVC addChildViewController:self.photoCollectionVC];
+    [self.containerVC.view addSubview:self.photoCollectionVC.view];
     [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
+    self.currentChildViewController = self.photoCollectionVC;
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -175,6 +179,7 @@
         
         
         _photoCollectionVC = [[TWPhotoCollectionViewController alloc] initWithCollectionViewLayout:layout];
+        _photoCollectionVC.delegate = self;
     }
     return _photoCollectionVC;
 }
@@ -211,11 +216,6 @@
             [UIView animateWithDuration:.3f animations:^{
                 self.topView.frame = topFrame;
                 self.containerVC.view.frame = containerFrame;
-                
-//                CGFloat colum = 4.0, spacing = 2.0;
-//                CGFloat value = floorf((CGRectGetWidth(self.view.bounds) - (colum - 1) * spacing) / colum);
-
-//                self.collectionView.contentOffset = CGPointMake(0.0f, self.collectionView.contentOffset.y < value * 2? self.collectionView.contentOffset.y == 0.0f? 44.0f : 0.0f : self.collectionView.contentOffset.y);
             }];
             break;
         }
@@ -267,6 +267,29 @@
     }
 }
 
+#pragma mark - TWPhotoCollectionDelegate methods
+-(void) didClickBackButton {
+    // Containment
+    CGFloat width = CGRectGetWidth(self.view.bounds);
+    
+    self.albumListVC.delegate = self;
+    
+    [self.containerVC addChildViewController:self.albumListVC];
+    [self.currentChildViewController willMoveToParentViewController:nil];
+    
+    self.albumListVC.view.transform = CGAffineTransformMakeTranslation(-width, 0);
+    
+    [self.containerVC transitionFromViewController:self.currentChildViewController toViewController:self.albumListVC duration:0.3f options:0 animations:^{
+
+        self.currentChildViewController.view.transform = CGAffineTransformMakeTranslation(width, 0);
+        self.albumListVC.view.transform = CGAffineTransformIdentity;
+        
+    } completion:^(BOOL finished) {
+        [self.albumListVC didMoveToParentViewController:self.containerVC];
+        [self.currentChildViewController removeFromParentViewController];
+        self.currentChildViewController = self.albumListVC;
+    }];
+}
 
 -(void) didSelectPhoto:(UIImage*) photo atAssetURL:(NSURL*) assetURL {
     [self.imageScrollView displayImage:photo andAssetURL:assetURL];
@@ -275,6 +298,29 @@
         [self tapGestureAction:nil];
     }
     
+}
+
+#pragma mark - TWAlbumListTableViewDelegate methods
+-(void)albumSelected:(ALAssetsGroup*) assetGroup {
+    CGFloat width = CGRectGetWidth(self.view.bounds);
+    
+    self.photoCollectionVC.delegate = self;
+    self.photoCollectionVC.selectedAssetGroup = assetGroup;
+    [self.containerVC addChildViewController:self.photoCollectionVC];
+    [self.currentChildViewController willMoveToParentViewController:nil];
+    
+    self.photoCollectionVC.view.transform = CGAffineTransformMakeTranslation(width, 0);
+    
+    [self.containerVC transitionFromViewController:self.currentChildViewController toViewController:self.photoCollectionVC duration:0.3f options:0 animations:^{
+
+        self.currentChildViewController.view.transform = CGAffineTransformMakeTranslation(-width, 0);
+        self.photoCollectionVC.view.transform = CGAffineTransformIdentity;
+
+    } completion:^(BOOL finished) {
+        [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
+        [self.currentChildViewController removeFromParentViewController];
+        self.currentChildViewController = self.photoCollectionVC;
+    }];
 }
 
 @end

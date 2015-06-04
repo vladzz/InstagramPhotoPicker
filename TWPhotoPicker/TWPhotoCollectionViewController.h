@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @protocol TWPhotoCollectionDelegate <NSObject>
 
 @required
 -(void) didSelectPhoto:(UIImage*) photo atAssetURL:(NSURL*) assetURL;
+-(void) didClickBackButton;
 
 @optional
 -(NSArray*) extraActions;
@@ -25,5 +27,9 @@
  first visiting it.
  */
 @property (nonatomic, strong) NSURL *imagePreselectURL;
+
+@property (nonatomic, strong) ALAssetsGroup *selectedAssetGroup;
+
+@property (nonatomic, assign) id<TWPhotoCollectionDelegate> delegate;
 
 @end
