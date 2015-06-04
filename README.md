@@ -20,6 +20,8 @@ With [CocoaPods](http://cocoapods.org/), add this line to your Podfile.
 
 ## Screenshots
 ![Example](./Screenshots/Screenshot01.png "Example")
+![Example2](./Screenshots/Screenshot02.png "Example2")
+![Example3](./Screenshots/Screenshot03.png "Example3")
 
 
 ## Usage

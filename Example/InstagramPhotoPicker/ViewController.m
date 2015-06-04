@@ -28,6 +28,7 @@
 
 - (IBAction)showAction:(id)sender {
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
+    photoPicker.title = @"SELECT";
     
     photoPicker.cropBlock = ^(UIImage *image, NSURL *originalAssetURL) {
         //do something
