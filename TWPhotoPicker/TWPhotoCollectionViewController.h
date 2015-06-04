@@ -12,7 +12,7 @@
 @protocol TWPhotoCollectionDelegate <NSObject>
 
 @required
--(void) didSelectPhoto:(UIImage*) photo atAssetURL:(NSURL*) assetURL;
+-(void) didSelectPhoto:(UIImage*) photo atAssetURL:(NSURL*) assetURL andDropDraw:(BOOL) dropDraw;
 -(void) didClickBackButton;
 
 @optional

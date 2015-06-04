@@ -34,6 +34,8 @@
 
 @property (nonatomic, weak) UIViewController *currentChildViewController;
 
+@property (nonatomic, assign, getter=isDrawUp) BOOL drawUp;
+
 @end
 
 @implementation TWPhotoPickerController
@@ -113,7 +115,7 @@
         
         rect = CGRectMake(0, CGRectGetHeight(self.topView.bounds)-handleHeight, CGRectGetWidth(self.topView.bounds), handleHeight);
         UIView *dragView = [[UIView alloc] initWithFrame:rect];
-        dragView.backgroundColor = [UIColor grayColor];
+        dragView.backgroundColor = [UIColor colorWithRed:0.141176F green:0.145098F blue:0.160784F alpha:1.0F];
         dragView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self.topView addSubview:dragView];
         
@@ -205,8 +207,10 @@
             CGRect topFrame = self.topView.frame;
             CGFloat endOriginY = self.topView.frame.origin.y;
             if (endOriginY > beginOriginY) {
+                self.drawUp = NO;
                 topFrame.origin.y = (endOriginY - beginOriginY) >= 20 ? 0 : -(CGRectGetHeight(self.topView.bounds)-20-44);
             } else if (endOriginY < beginOriginY) {
+                self.drawUp = YES;
                 topFrame.origin.y = (beginOriginY - endOriginY) >= 20 ? -(CGRectGetHeight(self.topView.bounds)-20-44) : 0;
             }
             
@@ -247,6 +251,8 @@
 }
 
 - (void)tapGestureAction:(UITapGestureRecognizer *)tapGesture {
+    self.drawUp = !self.drawUp;
+    
     CGRect topFrame = self.topView.frame;
     topFrame.origin.y = topFrame.origin.y == 0 ? -(CGRectGetHeight(self.topView.bounds)-20-44) : 0;
     
@@ -291,10 +297,10 @@
     }];
 }
 
--(void) didSelectPhoto:(UIImage*) photo atAssetURL:(NSURL*) assetURL {
+-(void) didSelectPhoto:(UIImage*) photo atAssetURL:(NSURL*) assetURL andDropDraw:(BOOL) dropDraw {
     [self.imageScrollView displayImage:photo andAssetURL:assetURL];
     
-    if (self.topView.frame.origin.y != 0) {
+    if (dropDraw && self.topView.frame.origin.y != 0) {
         [self tapGestureAction:nil];
     }
     

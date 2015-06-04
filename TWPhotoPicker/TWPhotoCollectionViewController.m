@@ -75,18 +75,18 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
                     if(foundIndex != NSNotFound) {
                         TWPhoto *asset = ((TWPhoto*)self.assets[foundIndex]);
                         if(self.delegate) {
-                            [self.delegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL]];
+                            [self.delegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     } else {
                         TWPhoto *firstPhoto = [self.assets objectAtIndex:0];
                         if(self.delegate) {
-                            [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL]];
+                            [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     }
                 } else {
                     TWPhoto *firstPhoto = [self.assets objectAtIndex:0];
                     if(self.delegate) {
-                        [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL]];
+                        [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                     }
                 }
             }
@@ -133,7 +133,7 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
                                               dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPhotoCollectionReusableView forIndexPath:indexPath];
     
     [reusableview.leftButton addTarget:self action:@selector(backButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-    
+    reusableview.titleLabel.text = self.selectedAssetGroup? [self.selectedAssetGroup valueForProperty:ALAssetsGroupPropertyName] : @"All photos";
     return reusableview;
 }
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -181,7 +181,7 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
             action.simpleBlock();
         } else {
             if(self.delegate) {
-                [self.delegate didSelectPhoto:action.assetImage atAssetURL:nil];
+                [self.delegate didSelectPhoto:action.assetImage atAssetURL:nil andDropDraw:NO];
             }
         }
     } else {
@@ -189,7 +189,7 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
         TWPhoto * asset = [self.assets objectAtIndex:indexPath.row];
         UIImage *image = asset.originalImage;
         if(self.delegate) {
-            [self.delegate didSelectPhoto:image atAssetURL:nil];
+            [self.delegate didSelectPhoto:image atAssetURL:nil andDropDraw:YES];
         }
     }
 }
