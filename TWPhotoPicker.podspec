@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "TWPhotoPicker"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "A image picker like Instagram."
 
   s.description  = <<-DESC
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/wenzhaot/InstagramPhotoPicker"
   s.screenshots  = "https://raw.githubusercontent.com/wenzhaot/InstagramPhotoPicker/master/Screenshots/Screenshot01.png"
   s.license      = "MIT"
-  s.author       = { "wenzhaot" => "tanwenzhao1025@gmail.com" }
+  s.author       = { "wenzhaot" => "tanwenzhao1025@gmail.com", "vladzz" => "vladzz@gmail.com" }
   s.source       = { :git => "https://github.com/wenzhaot/InstagramPhotoPicker.git", :tag => s.version.to_s }
   s.platform     = :ios, '7.0'
   s.requires_arc = true
