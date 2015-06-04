@@ -6,14 +6,17 @@
 //  Copyright (c) 2014 wenzhaot. All rights reserved.
 //
 
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "TWPhotoPickerController.h"
 #import "TWPhotoCollectionViewCell.h"
 #import "TWImageScrollView.h"
 #import "TWAssetAction.h"
 #import "TWPhoto.h"
+#import "TWPhotoLoader.h"
+#import "TWPhotoCollectionReusableView.h"
+#import "TWPhotoCollectionViewController.h"
+#import "TWAlbumListTableViewController.h"
 
-@interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate>
+@interface TWPhotoPickerController ()<TWPhotoCollectionDelegate>
 {
     CGFloat beginOriginY;
 }
@@ -22,26 +25,33 @@
 @property (strong, nonatomic) TWImageScrollView *imageScrollView;
 
 @property (strong, nonatomic) NSMutableArray *assets;
-@property (strong, nonatomic) ALAssetsLibrary *assetsLibrary;
 
-@property (strong, nonatomic) UICollectionView *collectionView;
+@property (strong, nonatomic) UIViewController *containerVC;
+
+@property (strong, nonatomic) TWAlbumListTableViewController *albumListVC;
+
+@property (strong, nonatomic) TWPhotoCollectionViewController *photoCollectionVC;
+
 @end
 
 @implementation TWPhotoPickerController
 
-- (void)loadView {
-    [super loadView];
-    
-    self.view.backgroundColor = [UIColor blackColor];
-    
-    [self.view addSubview:self.topView];
-    [self.view insertSubview:self.collectionView belowSubview:self.topView];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self loadPhotos];
+    [self addChildViewController:self.containerVC];
+    [self.containerVC didMoveToParentViewController:self];
+    
+    [self.view setBackgroundColor:[UIColor blackColor]];
+    [self.view addSubview:self.topView];
+    [self.view insertSubview:self.containerVC.view belowSubview:self.topView];
+    
+    [self.containerVC addChildViewController:self.photoCollectionVC];
+    [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 - (NSMutableArray *)assets {
@@ -56,83 +66,6 @@
         _additionalAssets = [NSArray array];
     }
     return _additionalAssets;
-}
-
-- (ALAssetsLibrary *)assetsLibrary {
-    if (_assetsLibrary == nil) {
-        _assetsLibrary = [[ALAssetsLibrary alloc] init];
-    }
-    return _assetsLibrary;
-}
-
-- (void)loadPhotos {
-    
-    __block NSURL *blockImagePreselectURL = self.imagePreselectURL;
-    
-    ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
-        
-        if (result) {
-            NSURL *assetURL = [result valueForProperty:ALAssetPropertyAssetURL];
-            
-            //We pre-select an image if we have used one before
-            if(blockImagePreselectURL && assetURL) {
-                if([self.imagePreselectURL isEqual:assetURL]) {
-                    UIImage *image = [UIImage imageWithCGImage:result.defaultRepresentation.fullResolutionImage scale:result.defaultRepresentation.scale orientation:(UIImageOrientation)result.defaultRepresentation.orientation];
-                    [self.imageScrollView displayImage:image andAssetURL:[result valueForProperty:ALAssetPropertyAssetURL]];
-                }
-            }
-            
-            TWPhoto *photo = [TWPhoto new];
-            photo.asset = result;
-            
-            [self.assets insertObject:photo atIndex:0];
-        }
-        
-    };
-    
-    ALAssetsLibraryGroupsEnumerationResultsBlock listGroupBlock = ^(ALAssetsGroup *group, BOOL *stop) {
-        
-        ALAssetsFilter *onlyPhotosFilter = [ALAssetsFilter allPhotos];
-        [group setAssetsFilter:onlyPhotosFilter];
-        if ([group numberOfAssets] > 0)
-        {
-            if ([[group valueForProperty:ALAssetsGroupPropertyType] intValue] == ALAssetsGroupSavedPhotos) {
-                [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
-            }
-        }
-        
-        if (group == nil) {
-            if (self.assets.count) {
-                TWPhoto * asset = [self.assets objectAtIndex:0];
-                
-                if(!self.imagePreselectURL) {
-                    UIImage *image = asset.originalImage;
-                    [self.imageScrollView displayImage:image andAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL]];
-                }
-            }
-            [self loadExtraActions];
-            [self.collectionView reloadData];
-        }
-        
-        
-    };
-    
-    [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:listGroupBlock failureBlock:^(NSError *error) {
-        NSLog(@"Load Photos Error: %@", error);
-    }];
-    
-}
-
-- (void)loadExtraActions {
-    if(self.additionalAssets && self.additionalAssets.count > 0) {
-        for(NSObject *actions in self.additionalAssets) {
-            [self.assets insertObject:actions atIndex:0];
-        }
-    }
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
 }
 
 - (UIView *)topView {
@@ -176,7 +109,7 @@
         
         rect = CGRectMake(0, CGRectGetHeight(self.topView.bounds)-handleHeight, CGRectGetWidth(self.topView.bounds), handleHeight);
         UIView *dragView = [[UIView alloc] initWithFrame:rect];
-        dragView.backgroundColor = navView.backgroundColor;
+        dragView.backgroundColor = [UIColor grayColor];
         dragView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self.topView addSubview:dragView];
         
@@ -207,8 +140,30 @@
     return _topView;
 }
 
-- (UICollectionView *)collectionView {
-    if (_collectionView == nil) {
+- (UIViewController*) containerVC {
+    if(_containerVC == nil) {
+        _containerVC = [[UIViewController alloc] init];
+        CGRect rect = CGRectMake(0, CGRectGetMaxY(self.topView.frame), CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds)-CGRectGetHeight(self.topView.bounds));
+        
+        _containerVC.view.backgroundColor = [UIColor blackColor];
+        _containerVC.view.frame = rect;
+        _containerVC.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    }
+    
+    return _containerVC;
+}
+
+- (TWAlbumListTableViewController *)albumListVC {
+    if(_albumListVC == nil) {
+        _albumListVC = [[TWAlbumListTableViewController alloc] init];
+    }
+    
+    return _albumListVC;
+}
+
+- (TWPhotoCollectionViewController *)photoCollectionVC {
+    if (_photoCollectionVC == nil) {
+        
         CGFloat colum = 4.0, spacing = 2.0;
         CGFloat value = floorf((CGRectGetWidth(self.view.bounds) - (colum - 1) * spacing) / colum);
         
@@ -218,17 +173,10 @@
         layout.minimumInteritemSpacing      = spacing;
         layout.minimumLineSpacing           = spacing;
         
-        CGRect rect = CGRectMake(0, CGRectGetMaxY(self.topView.frame), CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds)-CGRectGetHeight(self.topView.bounds));
-        _collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
-        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _collectionView.dataSource = self;
-        _collectionView.delegate = self;
-        _collectionView.backgroundColor = [UIColor clearColor];
-        _collectionView.allowsMultipleSelection = NO;
         
-        [_collectionView registerClass:[TWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"TWPhotoCollectionViewCell"];
+        _photoCollectionVC = [[TWPhotoCollectionViewController alloc] initWithCollectionViewLayout:layout];
     }
-    return _collectionView;
+    return _photoCollectionVC;
 }
 
 - (void)backAction {
@@ -257,12 +205,17 @@
                 topFrame.origin.y = (beginOriginY - endOriginY) >= 20 ? -(CGRectGetHeight(self.topView.bounds)-20-44) : 0;
             }
             
-            CGRect collectionFrame = self.collectionView.frame;
-            collectionFrame.origin.y = CGRectGetMaxY(topFrame);
-            collectionFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
+            CGRect containerFrame = self.containerVC.view.frame;
+            containerFrame.origin.y = CGRectGetMaxY(topFrame);
+            containerFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
             [UIView animateWithDuration:.3f animations:^{
                 self.topView.frame = topFrame;
-                self.collectionView.frame = collectionFrame;
+                self.containerVC.view.frame = containerFrame;
+                
+//                CGFloat colum = 4.0, spacing = 2.0;
+//                CGFloat value = floorf((CGRectGetWidth(self.view.bounds) - (colum - 1) * spacing) / colum);
+
+//                self.collectionView.contentOffset = CGPointMake(0.0f, self.collectionView.contentOffset.y < value * 2? self.collectionView.contentOffset.y == 0.0f? 44.0f : 0.0f : self.collectionView.contentOffset.y);
             }];
             break;
         }
@@ -277,13 +230,13 @@
             CGRect topFrame = self.topView.frame;
             topFrame.origin.y = translation.y + beginOriginY;
             
-            CGRect collectionFrame = self.collectionView.frame;
+            CGRect collectionFrame = self.photoCollectionVC.view.frame;
             collectionFrame.origin.y = CGRectGetMaxY(topFrame);
             collectionFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
             
             if (topFrame.origin.y <= 0 && (topFrame.origin.y >= -(CGRectGetHeight(self.topView.bounds)-20-44))) {
                 self.topView.frame = topFrame;
-                self.collectionView.frame = collectionFrame;
+                self.photoCollectionVC.view.frame = collectionFrame;
             }
             
             break;
@@ -297,75 +250,14 @@
     CGRect topFrame = self.topView.frame;
     topFrame.origin.y = topFrame.origin.y == 0 ? -(CGRectGetHeight(self.topView.bounds)-20-44) : 0;
     
-    CGRect collectionFrame = self.collectionView.frame;
-    collectionFrame.origin.y = CGRectGetMaxY(topFrame);
-    collectionFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
+    CGRect containerFrame = self.containerVC.view.frame;
+    containerFrame.origin.y = CGRectGetMaxY(topFrame);
+    containerFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
     [UIView animateWithDuration:.3f animations:^{
         self.topView.frame = topFrame;
-        self.collectionView.frame = collectionFrame;
+        self.containerVC.view.frame = containerFrame;
+//        self.collectionView.contentOffset = CGPointMake(0.0f, self.collectionView.contentOffset.y == 0.0f? 44.0f : 0.0f);
     }];
-}
-
-#pragma mark - Collection View Data Source
-
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    return 1;
-}
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return self.assets.count;
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"TWPhotoCollectionViewCell";
-    
-    TWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    if([self.assets[indexPath.row] isKindOfClass:[TWAssetAction class]]) {
-        TWAssetAction *action = ((TWAssetAction*)self.assets[indexPath.row]);
-        cell.imageView.image = action.thumbnail? action.thumbnail : action.assetImage;
-    } else {
-//        ALAsset * asset = [self.assets objectAtIndex:indexPath.row];
-//        NSURL *assetURL = [asset valueForProperty:ALAssetPropertyAssetURL];
-//        if([self.imagePreselectURL isEqual:assetURL]) {
-//            [self.collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-//        }
-        cell.imageView.image = [[self.assets objectAtIndex:indexPath.row] thumbnailImage];
-    }
-    
-    return cell;
-}
-
-#pragma mark - Collection View Delegate
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    if([[self.assets objectAtIndex:indexPath.row] isKindOfClass:[TWAssetAction class]]) {
-        TWAssetAction *action = self.assets[indexPath.row];
-        
-        /**
-         If these is a block defined we use it.
-         otherwise we display the original asset image.
-         */
-        if(action.simpleBlock) {
-            action.simpleBlock();
-        } else {
-            [self.imageScrollView displayImage:action.assetImage andAssetURL:nil];
-            if (self.topView.frame.origin.y != 0) {
-                [self tapGestureAction:nil];
-            }
-        }
-    } else {
-
-        TWPhoto * asset = [self.assets objectAtIndex:indexPath.row];
-        UIImage *image = asset.originalImage;
-        [self.imageScrollView displayImage:image andAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL]];
-        if (self.topView.frame.origin.y != 0) {
-            [self tapGestureAction:nil];
-        }
-    }
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
@@ -373,6 +265,16 @@
     if (velocity.y >= 2.0 && self.topView.frame.origin.y == 0) {
         [self tapGestureAction:nil];
     }
+}
+
+
+-(void) didSelectPhoto:(UIImage*) photo atAssetURL:(NSURL*) assetURL {
+    [self.imageScrollView displayImage:photo andAssetURL:assetURL];
+    
+    if (self.topView.frame.origin.y != 0) {
+        [self tapGestureAction:nil];
+    }
+    
 }
 
 @end
