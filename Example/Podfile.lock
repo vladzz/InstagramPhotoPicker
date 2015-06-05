@@ -9,6 +9,6 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  TWPhotoPicker: 230b3c825fade5cc2584b3e85c5661a656befe21
+  TWPhotoPicker: b46038d15618dbb7dfcf4a71474725a55286fa5d
 
 COCOAPODS: 0.37.2

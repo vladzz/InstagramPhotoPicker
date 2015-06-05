@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "TWPhotoPicker"
-  s.version      = "1.0.2"
+  s.version      = "1.0.1"
   s.summary      = "A image picker like Instagram."
 
   s.description  = <<-DESC

@@ -24,8 +24,10 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
     [super viewDidLoad];
     
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 14, 0, 0);
+    self.tableView.separatorColor = [UIColor colorWithRed:46.0/255 green:47.0/255 blue:49.0/255 alpha:1];
+    self.tableView.rowHeight = 48.f;
     
-    self.view.backgroundColor = [UIColor blackColor];
+    self.view.backgroundColor = [UIColor colorWithRed:23.0/255 green:24.0/255 blue:26.0/255 alpha:1];
     
     self.assetGroups = [NSMutableArray array];
     
@@ -42,7 +44,13 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
         [group setAssetsFilter:onlyPhotosFilter];
         
         if (group && [group numberOfAssets] > 0) {
-            [self.assetGroups addObject:group];
+            NSNumber *number = [group valueForProperty:ALAssetsGroupPropertyType];
+            int groupAll = 16 ;
+            if([number intValue] == groupAll) {
+                [self.assetGroups insertObject:group atIndex:0];
+            } else {
+                [self.assetGroups addObject:group];
+            }
         }
         
         if(group == nil) {
@@ -92,16 +100,18 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
     
     if(cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:kCellAlbumIdentifier];
-        cell.backgroundColor = [UIColor blackColor];
+        cell.backgroundColor = [UIColor colorWithRed:23.0/255 green:24.0/255 blue:26.0/255 alpha:1];
         cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         cell.textLabel.textColor = [UIColor whiteColor];
         cell.detailTextLabel.textColor = [UIColor grayColor];
         cell.detailTextLabel.font = [UIFont systemFontOfSize:14.0f];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.imageView.contentMode = UIViewContentModeCenter;
+        cell.tintColor = [UIColor grayColor];
     }
     
     ALAssetsGroup *assetGroup = self.assetGroups[indexPath.row];
-    UIImage *image = [UIImage imageWithCGImage:[assetGroup posterImage]];
+    UIImage *image = [UIImage imageWithCGImage:[assetGroup posterImage] scale:4 orientation:UIImageOrientationUp];
     cell.imageView.image = image;
     cell.textLabel.text = [assetGroup valueForProperty:ALAssetsGroupPropertyName];
     cell.detailTextLabel.text = [NSNumber numberWithInteger:[assetGroup numberOfAssets]].stringValue;

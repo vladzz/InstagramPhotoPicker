@@ -76,7 +76,7 @@
 
 - (UIView *)topView {
     if (_topView == nil) {
-        CGFloat handleHeight = 44.0f + (self.isNotFullScreenMode? [UIApplication sharedApplication].statusBarFrame.size.height : 0.0f);
+        CGFloat handleHeight = 40.0f + (self.isNotFullScreenMode? [UIApplication sharedApplication].statusBarFrame.size.height : 0.0f);
         CGRect rect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetWidth(self.view.bounds)+handleHeight*2);
         self.topView = [[UIView alloc] initWithFrame:rect];
         self.topView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
@@ -85,13 +85,14 @@
         
         rect = CGRectMake(0, 0, CGRectGetWidth(self.topView.bounds), handleHeight);
         UIView *navView = [[UIView alloc] initWithFrame:rect];//26 29 33
-        navView.backgroundColor = [[UIColor colorWithRed:26.0/255 green:29.0/255 blue:33.0/255 alpha:1] colorWithAlphaComponent:.8f];
+        navView.backgroundColor = [[UIColor colorWithRed:36.0/255 green:37.0/255 blue:41.0/255 alpha:1] colorWithAlphaComponent:.8f];
         [self.topView addSubview:navView];
         
         rect = CGRectMake(0, 0, 60, CGRectGetHeight(navView.bounds));
         UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         backBtn.frame = rect;
-        [backBtn setImage:[UIImage imageNamed:@"TWPhotoPicker.bundle/back.png"]
+        backBtn.imageEdgeInsets = UIEdgeInsetsMake(10., 20., 10., 20.);
+        [backBtn setImage:[UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"]
                  forState:UIControlStateNormal];
         [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:backBtn];
@@ -115,7 +116,7 @@
         
         rect = CGRectMake(0, CGRectGetHeight(self.topView.bounds)-handleHeight, CGRectGetWidth(self.topView.bounds), handleHeight);
         UIView *dragView = [[UIView alloc] initWithFrame:rect];
-        dragView.backgroundColor = [UIColor colorWithRed:0.141176F green:0.145098F blue:0.160784F alpha:1.0F];
+        dragView.backgroundColor = [[UIColor colorWithRed:36.0/255 green:37.0/255 blue:41.0/255 alpha:1] colorWithAlphaComponent:.8f];
         dragView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self.topView addSubview:dragView];
         

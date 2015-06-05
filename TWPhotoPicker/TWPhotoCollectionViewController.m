@@ -133,7 +133,7 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
                                               dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPhotoCollectionReusableView forIndexPath:indexPath];
     
     [reusableview.leftButton addTarget:self action:@selector(backButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-    reusableview.titleLabel.text = self.selectedAssetGroup? [self.selectedAssetGroup valueForProperty:ALAssetsGroupPropertyName] : @"All photos";
+    reusableview.titleLabel.text = self.selectedAssetGroup? [[self.selectedAssetGroup valueForProperty:ALAssetsGroupPropertyName] uppercaseString] : [@"All photos" uppercaseString];
     return reusableview;
 }
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
