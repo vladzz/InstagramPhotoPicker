@@ -15,7 +15,7 @@ Present Image Picker like Instagram
 
 With [CocoaPods](http://cocoapods.org/), add this line to your Podfile.
 
-    pod 'TWPhotoPicker', '~> 1.0.2' or
+    pod 'TWPhotoPicker', '~> 1.0.1' or
     pod 'TWPhotoPicker', :git => 'https://github.com/vladzz/InstagramPhotoPicker.git'
 
 ## Screenshots
