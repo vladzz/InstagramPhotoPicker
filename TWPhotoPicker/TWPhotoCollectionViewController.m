@@ -14,7 +14,7 @@
 
 static NSString *kPhotoCollectionViewCellIdentifier = @"TWPhotoCollectionViewCell";
 static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView";
-
+static NSUInteger kHeaderHeight = 44.f;
 @interface TWPhotoCollectionViewController ()
 
 @property (strong, nonatomic) NSMutableArray *assets;
@@ -25,7 +25,7 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.allowsMultipleSelection = NO;
     
@@ -39,6 +39,17 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self loadPhotos];
+
+    NSNumber *number = nil;
+    int groupAll = 16;
+    
+    if(self.selectedAssetGroup) {
+        number = [self.selectedAssetGroup valueForProperty:ALAssetsGroupPropertyType];
+    }
+    
+    if(self.selectedAssetGroup == nil || [number intValue] == groupAll) {
+        self.collectionView.contentOffset = CGPointMake(0.0f, kHeaderHeight);
+    }
 }
 
 - (void)viewDidLayoutSubviews {
@@ -163,7 +174,7 @@ static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView"
 #pragma mark - Collection View Delegate
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     
-    CGSize size = CGSizeMake(collectionView.frame.size.width, 44.0f);
+    CGSize size = CGSizeMake(collectionView.frame.size.width, kHeaderHeight);
     
     return size;
 }

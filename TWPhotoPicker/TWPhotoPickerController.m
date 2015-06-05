@@ -235,13 +235,13 @@
             CGRect topFrame = self.topView.frame;
             topFrame.origin.y = translation.y + beginOriginY;
             
-            CGRect collectionFrame = self.photoCollectionVC.view.frame;
+            CGRect collectionFrame = self.containerVC.view.frame;
             collectionFrame.origin.y = CGRectGetMaxY(topFrame);
             collectionFrame.size.height = CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(topFrame);
             
             if (topFrame.origin.y <= 0 && (topFrame.origin.y >= -(CGRectGetHeight(self.topView.bounds)-20-44))) {
                 self.topView.frame = topFrame;
-                self.photoCollectionVC.view.frame = collectionFrame;
+                self.containerVC.view.frame = collectionFrame;
             }
             
             break;
@@ -263,7 +263,6 @@
     [UIView animateWithDuration:.3f animations:^{
         self.topView.frame = topFrame;
         self.containerVC.view.frame = containerFrame;
-//        self.collectionView.contentOffset = CGPointMake(0.0f, self.collectionView.contentOffset.y == 0.0f? 44.0f : 0.0f);
     }];
 }
 

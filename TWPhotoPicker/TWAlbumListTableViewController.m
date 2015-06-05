@@ -66,10 +66,8 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    CGRect superFrame = self.view.superview.frame;
-    superFrame.origin.y = 0.0f;
-    superFrame.origin.x = 0.0f;
-    self.view.frame = superFrame;
+    self.view.frame = self.view.superview.bounds;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 
 - (void)didReceiveMemoryWarning {
