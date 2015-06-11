@@ -274,6 +274,10 @@
 }
 
 #pragma mark - TWPhotoCollectionDelegate methods
+-(NSArray*) extraActions {
+    return self.additionalAssets;
+}
+
 -(void) didClickBackButton {
     // Containment
     CGFloat width = CGRectGetWidth(self.view.bounds);
