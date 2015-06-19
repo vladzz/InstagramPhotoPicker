@@ -22,8 +22,6 @@
 }
 @property (strong, nonatomic) UIView *topView;
 @property (strong, nonatomic) UIImageView *maskView;
-@property (strong, nonatomic) UIButton *backBtn;
-@property (strong, nonatomic) UIButton *cropBtn;
 @property (strong, nonatomic) TWImageScrollView *imageScrollView;
 
 @property (strong, nonatomic) NSMutableArray *assets;

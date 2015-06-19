@@ -10,6 +10,9 @@
 
 @interface TWPhotoPickerController : UIViewController
 
+@property (strong, nonatomic) UIButton *backBtn;
+@property (strong, nonatomic) UIButton *cropBtn;
+
 /**
  These are additional Assets which get tacked on to the existing assets.
  They can be actionable e.g. Camera icon
