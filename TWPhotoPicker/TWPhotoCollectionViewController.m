@@ -123,6 +123,7 @@ static NSUInteger kHeaderHeight = 44;
                 
             }
             
+            self.imagePreselectURL = nil;
             [self.collectionView reloadData];
         } else {
             NSLog(@"Load Photos Error: %@", error);
