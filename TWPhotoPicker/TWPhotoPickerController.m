@@ -297,6 +297,7 @@
     } completion:^(BOOL finished) {
         [self.albumListVC didMoveToParentViewController:self.containerVC];
         [self.currentChildViewController removeFromParentViewController];
+        [self.currentChildViewController didMoveToParentViewController:nil];
         self.currentChildViewController = self.albumListVC;
     }];
 }
@@ -329,6 +330,7 @@
     } completion:^(BOOL finished) {
         [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
         [self.currentChildViewController removeFromParentViewController];
+        [self.currentChildViewController didMoveToParentViewController:nil];
         self.currentChildViewController = self.photoCollectionVC;
     }];
 }

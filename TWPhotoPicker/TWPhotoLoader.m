@@ -9,7 +9,6 @@
 #import "TWPhotoLoader.h"
 
 @interface TWPhotoLoader ()
-@property (strong, nonatomic) NSMutableArray *allPhotos;
 @property (strong, nonatomic) ALAssetsLibrary *assetsLibrary;
 @property (readwrite, copy, nonatomic) void(^loadBlock)(NSArray *photos, NSError *error);
 @end

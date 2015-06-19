@@ -7,6 +7,7 @@
 //
 
 #import "TWAlbumListTableViewController.h"
+#import "TWAlbum.h"
 
 static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
 
@@ -46,10 +47,14 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
         if (group && [group numberOfAssets] > 0) {
             NSNumber *number = [group valueForProperty:ALAssetsGroupPropertyType];
             int groupAll = 16 ;
+            
+            TWAlbum *groupAlbum = [[TWAlbum alloc] init];
+            groupAlbum.assetGroup = group;
+            
             if([number intValue] == groupAll) {
-                [self.assetGroups insertObject:group atIndex:0];
+                [self.assetGroups insertObject:groupAlbum atIndex:0];
             } else {
-                [self.assetGroups addObject:group];
+                [self.assetGroups addObject:groupAlbum];
             }
         }
         
@@ -108,18 +113,18 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
         cell.tintColor = [UIColor grayColor];
     }
     
-    ALAssetsGroup *assetGroup = self.assetGroups[indexPath.row];
-    UIImage *image = [UIImage imageWithCGImage:[assetGroup posterImage] scale:4 orientation:UIImageOrientationUp];
+    TWAlbum *assetGroup = self.assetGroups[indexPath.row];
+    UIImage *image = assetGroup.thumbnailImage;
     cell.imageView.image = image;
-    cell.textLabel.text = [assetGroup valueForProperty:ALAssetsGroupPropertyName];
-    cell.detailTextLabel.text = [NSNumber numberWithInteger:[assetGroup numberOfAssets]].stringValue;
+    cell.textLabel.text = [assetGroup.assetGroup valueForProperty:ALAssetsGroupPropertyName];
+    cell.detailTextLabel.text = [NSNumber numberWithInteger:[assetGroup.assetGroup numberOfAssets]].stringValue;
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if(self.delegate) {
-        [self.delegate albumSelected:self.assetGroups[indexPath.row]];
+        [self.delegate albumSelected:((TWAlbum*)self.assetGroups[indexPath.row]).assetGroup];
     }
 }
 @end

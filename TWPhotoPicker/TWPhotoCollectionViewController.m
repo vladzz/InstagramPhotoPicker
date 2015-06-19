@@ -14,7 +14,7 @@
 
 static NSString *kPhotoCollectionViewCellIdentifier = @"TWPhotoCollectionViewCell";
 static NSString *kPhotoCollectionReusableView = @"TWPhotoCollectionReusableView";
-static NSUInteger kHeaderHeight = 44.f;
+static NSUInteger kHeaderHeight = 44;
 @interface TWPhotoCollectionViewController ()
 
 @property (strong, nonatomic) NSMutableArray *assets;
@@ -52,6 +52,13 @@ static NSUInteger kHeaderHeight = 44.f;
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[[TWPhotoLoader sharedLoader] allPhotos] removeAllObjects];
+    [self.collectionView reloadData];
+    
+}
+
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     self.view.frame = self.view.superview.bounds;
@@ -74,12 +81,8 @@ static NSUInteger kHeaderHeight = 44.f;
                     
                     NSUInteger foundIndex = [self.assets indexOfObjectPassingTest:^BOOL(TWPhoto *obj, NSUInteger idx, BOOL *stop) {
                         NSURL *assetURL = [obj.asset valueForProperty:ALAssetPropertyAssetURL];
-                        
-                        if([assetURL.absoluteString isEqualToString:self.imagePreselectURL.absoluteString]) {
-                            return YES;
-                        } else {
-                            return NO;
-                        }
+
+                        return [assetURL.absoluteString isEqualToString:self.imagePreselectURL.absoluteString];
                         
                     }];
                     
@@ -89,13 +92,13 @@ static NSUInteger kHeaderHeight = 44.f;
                             [self.delegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     } else {
-                        TWPhoto *firstPhoto = [self.assets objectAtIndex:0];
+                        TWPhoto *firstPhoto = self.assets[0];
                         if(self.delegate) {
                             [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     }
                 } else {
-                    TWPhoto *firstPhoto = [self.assets objectAtIndex:0];
+                    TWPhoto *firstPhoto = self.assets[0];
                     if(self.delegate) {
                         [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                     }
@@ -161,11 +164,11 @@ static NSUInteger kHeaderHeight = 44.f;
 {
     TWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kPhotoCollectionViewCellIdentifier forIndexPath:indexPath];
     
-    if([self.assets[indexPath.row] isKindOfClass:[TWAssetAction class]]) {
-        TWAssetAction *action = ((TWAssetAction*)self.assets[indexPath.row]);
+    if([self.assets[(NSUInteger) indexPath.row] isKindOfClass:[TWAssetAction class]]) {
+        TWAssetAction *action = ((TWAssetAction*)self.assets[(NSUInteger) indexPath.row]);
         cell.imageView.image = action.thumbnail? action.thumbnail : action.assetImage;
     } else {
-        cell.imageView.image = [[self.assets objectAtIndex:indexPath.row] thumbnailImage];
+        cell.imageView.image = [self.assets[(NSUInteger) indexPath.row] thumbnailImage];
     }
     
     return cell;
@@ -173,16 +176,16 @@ static NSUInteger kHeaderHeight = 44.f;
 
 #pragma mark - Collection View Delegate
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    
+
     CGSize size = CGSizeMake(collectionView.frame.size.width, kHeaderHeight);
-    
+
     return size;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if([[self.assets objectAtIndex:indexPath.row] isKindOfClass:[TWAssetAction class]]) {
-        TWAssetAction *action = self.assets[indexPath.row];
+    if([self.assets[(NSUInteger) indexPath.row] isKindOfClass:[TWAssetAction class]]) {
+        TWAssetAction *action = self.assets[(NSUInteger) indexPath.row];
         
         /**
          If these is a block defined we use it.
@@ -197,7 +200,7 @@ static NSUInteger kHeaderHeight = 44.f;
         }
     } else {
         
-        TWPhoto * asset = [self.assets objectAtIndex:indexPath.row];
+        TWPhoto * asset = self.assets[(NSUInteger) indexPath.row];
         UIImage *image = asset.originalImage;
         if(self.delegate) {
             [self.delegate didSelectPhoto:image atAssetURL:nil andDropDraw:YES];
