@@ -21,6 +21,9 @@
     CGFloat beginOriginY;
 }
 @property (strong, nonatomic) UIView *topView;
+@property (strong, nonatomic) UIButton *backBtn;
+@property (strong, nonatomic) UIButton *cropBtn;
+
 @property (strong, nonatomic) UIImageView *maskView;
 @property (strong, nonatomic) TWImageScrollView *imageScrollView;
 
@@ -40,6 +43,18 @@
 
 @implementation TWPhotoPickerController
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.customBackButtonImage = [UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"];
+        self.cropButtonTitleColor = [UIColor cyanColor];
+        self.cropButtonFont = [UIFont boldSystemFontOfSize:14.0f];
+        self.cropButtonTitle = @"OK";
+        
+    }
+    return self;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -100,8 +115,7 @@
         self.backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         self.backBtn.frame = rect;
         self.backBtn.imageEdgeInsets = UIEdgeInsetsMake(10., 20., 10., 20.);
-        [self.backBtn setImage:[UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"]
-                 forState:UIControlStateNormal];
+        [self.backBtn setImage:self.customBackButtonImage forState:UIControlStateNormal];
         [self.backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:self.backBtn];
         
@@ -116,9 +130,9 @@
         
         rect = CGRectMake(CGRectGetWidth(navView.bounds)-80, 0, 80, CGRectGetHeight(navView.bounds));
         self.cropBtn = [[UIButton alloc] initWithFrame:rect];
-        [self.cropBtn setTitle:@"OK" forState:UIControlStateNormal];
-        [self.cropBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-        [self.cropBtn setTitleColor:[UIColor cyanColor] forState:UIControlStateNormal];
+        [self.cropBtn setTitle:self.cropButtonTitle forState:UIControlStateNormal];
+        [self.cropBtn.titleLabel setFont:self.cropButtonFont];
+        [self.cropBtn setTitleColor:self.cropButtonTitleColor forState:UIControlStateNormal];
         [self.cropBtn addTarget:self action:@selector(cropAction) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:self.cropBtn];
         
