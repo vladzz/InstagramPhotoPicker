@@ -22,6 +22,8 @@
 }
 @property (strong, nonatomic) UIView *topView;
 @property (strong, nonatomic) UIImageView *maskView;
+@property (strong, nonatomic) UIButton *backBtn;
+@property (strong, nonatomic) UIButton *cropBtn;
 @property (strong, nonatomic) TWImageScrollView *imageScrollView;
 
 @property (strong, nonatomic) NSMutableArray *assets;
@@ -54,6 +56,14 @@
     [self.containerVC.view addSubview:self.photoCollectionVC.view];
     [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
     self.currentChildViewController = self.photoCollectionVC;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if(self.imagePreselectURL) {
+        self.photoCollectionVC.imagePreselectURL = self.imagePreselectURL;
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -89,13 +99,13 @@
         [self.topView addSubview:navView];
         
         rect = CGRectMake(0, 0, 60, CGRectGetHeight(navView.bounds));
-        UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        backBtn.frame = rect;
-        backBtn.imageEdgeInsets = UIEdgeInsetsMake(10., 20., 10., 20.);
-        [backBtn setImage:[UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"]
+        self.backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.backBtn.frame = rect;
+        self.backBtn.imageEdgeInsets = UIEdgeInsetsMake(10., 20., 10., 20.);
+        [self.backBtn setImage:[UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"]
                  forState:UIControlStateNormal];
-        [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
-        [navView addSubview:backBtn];
+        [self.backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+        [navView addSubview:self.backBtn];
         
         rect = CGRectMake((CGRectGetWidth(navView.bounds)-200)/2, 0, 200, CGRectGetHeight(navView.bounds));
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
@@ -107,12 +117,12 @@
         [navView addSubview:titleLabel];
         
         rect = CGRectMake(CGRectGetWidth(navView.bounds)-80, 0, 80, CGRectGetHeight(navView.bounds));
-        UIButton *cropBtn = [[UIButton alloc] initWithFrame:rect];
-        [cropBtn setTitle:@"OK" forState:UIControlStateNormal];
-        [cropBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-        [cropBtn setTitleColor:[UIColor cyanColor] forState:UIControlStateNormal];
-        [cropBtn addTarget:self action:@selector(cropAction) forControlEvents:UIControlEventTouchUpInside];
-        [navView addSubview:cropBtn];
+        self.cropBtn = [[UIButton alloc] initWithFrame:rect];
+        [self.cropBtn setTitle:@"OK" forState:UIControlStateNormal];
+        [self.cropBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
+        [self.cropBtn setTitleColor:[UIColor cyanColor] forState:UIControlStateNormal];
+        [self.cropBtn addTarget:self action:@selector(cropAction) forControlEvents:UIControlEventTouchUpInside];
+        [navView addSubview:self.cropBtn];
         
         rect = CGRectMake(0, CGRectGetHeight(self.topView.bounds)-handleHeight, CGRectGetWidth(self.topView.bounds), handleHeight);
         UIView *dragView = [[UIView alloc] initWithFrame:rect];
@@ -282,6 +292,7 @@
     // Containment
     CGFloat width = CGRectGetWidth(self.view.bounds);
     
+    self.photoCollectionVC.imagePreselectURL = nil;
     self.albumListVC.delegate = self;
     
     [self.containerVC addChildViewController:self.albumListVC];

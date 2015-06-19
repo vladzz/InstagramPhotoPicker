@@ -12,6 +12,8 @@
 @interface ViewController ()
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
 
+@property (strong, nonatomic) NSURL *originalAssetURL;
+
 @end
 
 @implementation ViewController
@@ -30,9 +32,14 @@
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
     photoPicker.title = @"SELECT";
     
+    if(self.originalAssetURL) {
+        photoPicker.imagePreselectURL = self.originalAssetURL;
+    }
+    
     photoPicker.cropBlock = ^(UIImage *image, NSURL *originalAssetURL) {
         //do something
         self.imageView.image = image;
+        self.originalAssetURL = originalAssetURL;
     };
     
     [self presentViewController:photoPicker animated:YES completion:NULL];

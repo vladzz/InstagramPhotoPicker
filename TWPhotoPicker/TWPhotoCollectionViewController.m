@@ -89,17 +89,29 @@ static NSUInteger kHeaderHeight = 44;
                     if(foundIndex != NSNotFound) {
                         TWPhoto *asset = ((TWPhoto*)self.assets[foundIndex]);
                         if(self.delegate) {
+                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:foundIndex inSection:0];
+                            [self.collectionView selectItemAtIndexPath:pathToSelect
+                                                              animated:YES
+                                                        scrollPosition:UICollectionViewScrollPositionNone];
                             [self.delegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     } else {
                         TWPhoto *firstPhoto = self.assets[0];
                         if(self.delegate) {
+                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
+                            [self.collectionView selectItemAtIndexPath:pathToSelect
+                                                              animated:YES
+                                                        scrollPosition:UICollectionViewScrollPositionNone];
                             [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     }
                 } else {
                     TWPhoto *firstPhoto = self.assets[0];
                     if(self.delegate) {
+                        NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
+                        [self.collectionView selectItemAtIndexPath:pathToSelect
+                                                          animated:YES
+                                                    scrollPosition:UICollectionViewScrollPositionNone];
                         [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                     }
                 }
@@ -184,6 +196,8 @@ static NSUInteger kHeaderHeight = 44;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"selected cell at index path %ld", (long)indexPath.row);
+        
     if([self.assets[(NSUInteger) indexPath.row] isKindOfClass:[TWAssetAction class]]) {
         TWAssetAction *action = self.assets[(NSUInteger) indexPath.row];
         
@@ -199,11 +213,10 @@ static NSUInteger kHeaderHeight = 44;
             }
         }
     } else {
-        
         TWPhoto * asset = self.assets[(NSUInteger) indexPath.row];
         UIImage *image = asset.originalImage;
         if(self.delegate) {
-            [self.delegate didSelectPhoto:image atAssetURL:nil andDropDraw:YES];
+            [self.delegate didSelectPhoto:image atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:YES];
         }
     }
 }
