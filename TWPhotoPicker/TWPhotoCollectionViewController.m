@@ -109,7 +109,6 @@ static NSUInteger kHeaderHeight = 44;
                         TWPhoto *asset = ((TWPhoto*)self.assets[foundIndex]);
                         if(self.photoCollectiondelegate) {
                             NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:foundIndex inSection:0];
-                            [self collectionView:self.collectionView didSelectItemAtIndexPath:pathToSelect];
                             self.selectedIndexPath = pathToSelect;
                             [self.photoCollectiondelegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
@@ -117,7 +116,6 @@ static NSUInteger kHeaderHeight = 44;
                         TWPhoto *firstPhoto = self.assets[0];
                         if(self.photoCollectiondelegate) {
                             NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
-                            [self collectionView:self.collectionView didSelectItemAtIndexPath:pathToSelect];
                             self.selectedIndexPath = pathToSelect;
                             [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
@@ -126,8 +124,7 @@ static NSUInteger kHeaderHeight = 44;
                     TWPhoto *firstPhoto = self.assets[0];
                     if(self.photoCollectiondelegate) {
                         NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
-                        [self collectionView:self.collectionView didSelectItemAtIndexPath:pathToSelect];
-                            self.selectedIndexPath = pathToSelect;
+                        self.selectedIndexPath = pathToSelect;
                         [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                     }
                 }
@@ -141,6 +138,7 @@ static NSUInteger kHeaderHeight = 44;
             
             self.imagePreselectURL = nil;
             [self.collectionView reloadData];
+            [self collectionView:self.collectionView didSelectItemAtIndexPath:self.selectedIndexPath];
         } else {
             NSLog(@"Load Photos Error: %@", error);
         }
