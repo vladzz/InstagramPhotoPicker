@@ -10,12 +10,12 @@
 
 @implementation TWAlbum
 
-- (UIImage *)thumbnailImage {
-    if(!_thumbnailImage) {
-        _thumbnailImage = [UIImage imageWithCGImage:[self.assetGroup posterImage] scale:4 orientation:UIImageOrientationUp];
-    }
-    
-    return _thumbnailImage;
-}
+//- (UIImage *)thumbnailImage {
+//    if(!_thumbnailImage) {
+//        _thumbnailImage = [UIImage imageWithCGImage:[self.assetGroup posterImage] scale:4 orientation:UIImageOrientationUp];
+//    }
+//    
+//    return _thumbnailImage;
+//}
 
 @end

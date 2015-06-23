@@ -7,16 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+#import "TWAlbum.h"
 
 @protocol TWAlbumListTableViewDelegate <NSObject>
 
--(void)albumSelected:(ALAssetsGroup*) assetGroup;
+-(void)albumSelected:(TWAlbum*) album;
 
 @end
 
 @interface TWAlbumListTableViewController : UITableViewController
 
-@property(nonatomic, assign) id<TWAlbumListTableViewDelegate> delegate;
+@property(nonatomic, assign) id<TWAlbumListTableViewDelegate> albumListTableViewDelegate;
+
+- (void) addScrollViewDelegate:(id<UIScrollViewDelegate>)delegate;
+- (void) removeScrollViewDelegate:(id<UIScrollViewDelegate>)delegate;
 
 @end

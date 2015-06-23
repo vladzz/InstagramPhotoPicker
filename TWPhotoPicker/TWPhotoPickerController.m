@@ -10,13 +10,14 @@
 #import "TWPhotoCollectionViewCell.h"
 #import "TWImageScrollView.h"
 #import "TWAssetAction.h"
+#import "TWAlbum.h"
 #import "TWPhoto.h"
 #import "TWPhotoLoader.h"
 #import "TWPhotoCollectionReusableView.h"
 #import "TWPhotoCollectionViewController.h"
 #import "TWAlbumListTableViewController.h"
 
-@interface TWPhotoPickerController ()<TWPhotoCollectionDelegate, TWAlbumListTableViewDelegate>
+@interface TWPhotoPickerController ()<TWPhotoCollectionDelegate, TWAlbumListTableViewDelegate, UIScrollViewDelegate>
 {
     CGFloat beginOriginY;
 }
@@ -64,6 +65,8 @@
     [self.view setBackgroundColor:[UIColor blackColor]];
     [self.view addSubview:self.topView];
     [self.view insertSubview:self.containerVC.view belowSubview:self.topView];
+    
+    [self.photoCollectionVC addScrollViewDelegate:self];
     
     [self.containerVC addChildViewController:self.photoCollectionVC];
     [self.containerVC.view addSubview:self.photoCollectionVC.view];
@@ -202,9 +205,9 @@
         layout.minimumInteritemSpacing      = spacing;
         layout.minimumLineSpacing           = spacing;
         
-        
         _photoCollectionVC = [[TWPhotoCollectionViewController alloc] initWithCollectionViewLayout:layout];
-        _photoCollectionVC.delegate = self;
+        _photoCollectionVC.photoCollectiondelegate = self;
+        
     }
     return _photoCollectionVC;
 }
@@ -305,9 +308,14 @@
     CGFloat width = CGRectGetWidth(self.view.bounds);
     
     self.photoCollectionVC.imagePreselectURL = nil;
-    self.albumListVC.delegate = self;
+    self.photoCollectionVC.photoCollectiondelegate = nil;
+    [self.photoCollectionVC removeScrollViewDelegate:self];
+    self.albumListVC.albumListTableViewDelegate = self;
+    [self.albumListVC addScrollViewDelegate:self];
     
     [self.containerVC addChildViewController:self.albumListVC];
+    
+    self.albumListVC.view.frame = self.containerVC.view.bounds;
     [self.currentChildViewController willMoveToParentViewController:nil];
     
     self.albumListVC.view.transform = CGAffineTransformMakeTranslation(-width, 0);
@@ -318,6 +326,7 @@
         self.albumListVC.view.transform = CGAffineTransformIdentity;
         
     } completion:^(BOOL finished) {
+        self.photoCollectionVC.view.transform = CGAffineTransformIdentity;
         [self.albumListVC didMoveToParentViewController:self.containerVC];
         [self.currentChildViewController removeFromParentViewController];
         [self.currentChildViewController didMoveToParentViewController:nil];
@@ -335,11 +344,14 @@
 }
 
 #pragma mark - TWAlbumListTableViewDelegate methods
--(void)albumSelected:(ALAssetsGroup*) assetGroup {
+-(void)albumSelected:(TWAlbum*) assetGroup {
     CGFloat width = CGRectGetWidth(self.view.bounds);
     
-    self.photoCollectionVC.delegate = self;
+    self.albumListVC.albumListTableViewDelegate = nil;
+    [self.albumListVC removeScrollViewDelegate:self];
+    self.photoCollectionVC.photoCollectiondelegate = self;
     self.photoCollectionVC.selectedAssetGroup = assetGroup;
+    [self.photoCollectionVC addScrollViewDelegate:self];
     [self.containerVC addChildViewController:self.photoCollectionVC];
     [self.currentChildViewController willMoveToParentViewController:nil];
     
@@ -351,6 +363,7 @@
         self.photoCollectionVC.view.transform = CGAffineTransformIdentity;
 
     } completion:^(BOOL finished) {
+        self.albumListVC.view.transform = CGAffineTransformIdentity;
         [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
         [self.currentChildViewController removeFromParentViewController];
         [self.currentChildViewController didMoveToParentViewController:nil];

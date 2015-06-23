@@ -13,6 +13,12 @@
 
 @property (nonatomic, strong) UIImage *thumbnailImage;
 
+@property (nonatomic, strong) NSString *albumName;
+
+@property (nonatomic, strong) NSURL *albumURL;
+
+@property (nonatomic, strong) NSNumber *groupType;
+@property (nonatomic, strong) NSNumber *numberOfAssets;
 @property (nonatomic, strong) ALAssetsGroup *assetGroup;
 
 @end

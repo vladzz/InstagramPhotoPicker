@@ -17,6 +17,6 @@ typedef void (^loadBlock)(NSArray *photos, NSError *error);
 + (TWPhotoLoader *)sharedLoader;
 
 + (void)loadAllPhotos:(void (^)(NSArray *photos, NSError *error))completion;
-+ (void)loadAllPhotosInGroup:(ALAssetsGroup*) group andCompletion:(void (^)(NSArray *photos, NSError *error))completion;
++ (void)loadAllPhotosInGroup:(NSURL*) groupURL andCompletion:(void (^)(NSArray *photos, NSError *error))completion;
 
 @end

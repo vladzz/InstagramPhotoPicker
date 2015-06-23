@@ -19,9 +19,22 @@ static NSUInteger kHeaderHeight = 44;
 
 @property (strong, nonatomic) NSMutableArray *assets;
 
+@property(nonatomic, strong) NSMutableArray *scrollListeners;
+
 @end
 
 @implementation TWPhotoCollectionViewController
+
+
+
+- (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout;
+{
+    self = [super initWithCollectionViewLayout:layout];
+    if (self) {
+        self.scrollListeners = [NSMutableArray array];
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,10 +57,11 @@ static NSUInteger kHeaderHeight = 44;
     int groupAll = 16;
     
     if(self.selectedAssetGroup) {
-        number = [self.selectedAssetGroup valueForProperty:ALAssetsGroupPropertyType];
+        number = self.selectedAssetGroup.groupType;
     }
     
     if(self.selectedAssetGroup == nil || [number intValue] == groupAll) {
+        if(self.collectionView.contentSize.height+ kHeaderHeight > CGRectGetHeight(self.collectionView.frame))
         self.collectionView.contentOffset = CGPointMake(0.0f, kHeaderHeight);
     }
 }
@@ -88,37 +102,37 @@ static NSUInteger kHeaderHeight = 44;
                     
                     if(foundIndex != NSNotFound) {
                         TWPhoto *asset = ((TWPhoto*)self.assets[foundIndex]);
-                        if(self.delegate) {
+                        if(self.photoCollectiondelegate) {
                             NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:foundIndex inSection:0];
                             [self.collectionView selectItemAtIndexPath:pathToSelect
                                                               animated:YES
                                                         scrollPosition:UICollectionViewScrollPositionNone];
-                            [self.delegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
+                            [self.photoCollectiondelegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     } else {
                         TWPhoto *firstPhoto = self.assets[0];
-                        if(self.delegate) {
+                        if(self.photoCollectiondelegate) {
                             NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
                             [self.collectionView selectItemAtIndexPath:pathToSelect
                                                               animated:YES
                                                         scrollPosition:UICollectionViewScrollPositionNone];
-                            [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
+                            [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     }
                 } else {
                     TWPhoto *firstPhoto = self.assets[0];
-                    if(self.delegate) {
+                    if(self.photoCollectiondelegate) {
                         NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
                         [self.collectionView selectItemAtIndexPath:pathToSelect
                                                           animated:YES
                                                     scrollPosition:UICollectionViewScrollPositionNone];
-                        [self.delegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
+                        [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                     }
                 }
             }
             
-            if(self.delegate && [self.delegate respondsToSelector:@selector(extraActions)]) {
-                [self loadExtraActions:[self.delegate extraActions]];
+            if(self.photoCollectiondelegate && [self.photoCollectiondelegate respondsToSelector:@selector(extraActions)]) {
+                [self loadExtraActions:[self.photoCollectiondelegate extraActions]];
                 
                 
             }
@@ -132,7 +146,7 @@ static NSUInteger kHeaderHeight = 44;
     };
     
     if(self.selectedAssetGroup) {
-        [TWPhotoLoader loadAllPhotosInGroup:self.selectedAssetGroup andCompletion:photoBlock];
+        [TWPhotoLoader loadAllPhotosInGroup:self.selectedAssetGroup.albumURL andCompletion:photoBlock];
     } else {
         [TWPhotoLoader loadAllPhotos:photoBlock];
     }
@@ -148,8 +162,32 @@ static NSUInteger kHeaderHeight = 44;
 }
 
 -(void)backButtonClicked {
-    if(self.delegate) {
-        [self.delegate didClickBackButton];
+    if(self.photoCollectiondelegate) {
+        [self.photoCollectiondelegate didClickBackButton];
+    }
+}
+
+- (void) addScrollViewDelegate:(id<UIScrollViewDelegate>)delegate {
+    if (![self.scrollListeners containsObject:delegate]) {
+        [self.scrollListeners addObject:delegate];
+    }
+}
+
+- (void) removeScrollViewDelegate:(id<UIScrollViewDelegate>)delegate {
+    if ([self.scrollListeners containsObject:delegate]) {
+        [self.scrollListeners removeObject:delegate];
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    
+    if(self.scrollListeners) {
+        for(id<UIScrollViewDelegate> observer in self.scrollListeners) {
+            if (observer) {
+                [observer scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
+            }
+        }
     }
 }
 
@@ -160,7 +198,7 @@ static NSUInteger kHeaderHeight = 44;
                                               dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPhotoCollectionReusableView forIndexPath:indexPath];
     
     [reusableview.leftButton addTarget:self action:@selector(backButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-    reusableview.titleLabel.text = self.selectedAssetGroup? [[self.selectedAssetGroup valueForProperty:ALAssetsGroupPropertyName] uppercaseString] : [@"All photos" uppercaseString];
+    reusableview.titleLabel.text = self.selectedAssetGroup? [[self.selectedAssetGroup albumName] uppercaseString] : [@"All photos" uppercaseString];
     return reusableview;
 }
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -209,15 +247,15 @@ static NSUInteger kHeaderHeight = 44;
         if(action.simpleBlock) {
             action.simpleBlock();
         } else {
-            if(self.delegate) {
-                [self.delegate didSelectPhoto:action.assetImage atAssetURL:nil andDropDraw:NO];
+            if(self.photoCollectiondelegate) {
+                [self.photoCollectiondelegate didSelectPhoto:action.assetImage atAssetURL:nil andDropDraw:NO];
             }
         }
     } else {
         TWPhoto * asset = self.assets[(NSUInteger) indexPath.row];
         UIImage *image = asset.originalImage;
-        if(self.delegate) {
-            [self.delegate didSelectPhoto:image atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:YES];
+        if(self.photoCollectiondelegate) {
+            [self.photoCollectiondelegate didSelectPhoto:image atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:YES];
         }
     }
 }

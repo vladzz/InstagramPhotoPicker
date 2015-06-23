@@ -26,8 +26,21 @@
  */
 @property (nonatomic, strong) NSURL *imagePreselectURL;
 
+/**
+ This property allows the cusotmisation of the back button image.
+ */
 @property (nonatomic, strong) UIImage *customBackButtonImage;
+/**
+ Change the font on the crop button
+ */
 @property (nonatomic, strong) UIFont *cropButtonFont;
+/**
+ Change the cop button Title color
+ */
 @property (nonatomic, strong) UIColor *cropButtonTitleColor;
+
+/**
+ Change the title which is displayed on the crop button
+ */
 @property (nonatomic, strong) NSString *cropButtonTitle;
 @end

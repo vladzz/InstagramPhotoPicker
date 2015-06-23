@@ -7,11 +7,12 @@
 //
 
 #import "TWAlbumListTableViewController.h"
-#import "TWAlbum.h"
 
 static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
 
 @interface TWAlbumListTableViewController ()
+
+@property(nonatomic, strong) NSMutableArray *scrollListeners;
 
 @property (strong, nonatomic) ALAssetsLibrary *assetsLibrary;
 
@@ -21,8 +22,19 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
 
 @implementation TWAlbumListTableViewController
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.scrollListeners = [NSMutableArray array];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 14, 0, 0);
     self.tableView.separatorColor = [UIColor colorWithRed:46.0/255 green:47.0/255 blue:49.0/255 alpha:1];
@@ -33,6 +45,7 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
     self.assetGroups = [NSMutableArray array];
     
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -49,7 +62,12 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
             int groupAll = 16 ;
             
             TWAlbum *groupAlbum = [[TWAlbum alloc] init];
-            groupAlbum.assetGroup = group;
+//            groupAlbum.assetGroup = group;
+            groupAlbum.groupType = number;
+            groupAlbum.thumbnailImage = [UIImage imageWithCGImage:group.posterImage scale:4 orientation:UIImageOrientationUp];
+            groupAlbum.albumURL = [group valueForProperty:ALAssetsGroupPropertyURL];
+            groupAlbum.albumName = [group valueForProperty:ALAssetsGroupPropertyName];
+            groupAlbum.numberOfAssets = [NSNumber numberWithInteger:[group numberOfAssets]];
             
             if([number intValue] == groupAll) {
                 [self.assetGroups insertObject:groupAlbum atIndex:0];
@@ -69,11 +87,11 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
     
 }
 
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    self.view.frame = self.view.superview.bounds;
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-}
+//- (void)viewDidLayoutSubviews {
+//    [super viewDidLayoutSubviews];
+//    NSLog( @"<%@:%d> %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__,  @"Called" );
+//    self.view.frame = self.view.superview.bounds;
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -85,6 +103,30 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
     }
     return _assetsLibrary;
+}
+
+- (void) addScrollViewDelegate:(id<UIScrollViewDelegate>)delegate {
+    if (![self.scrollListeners containsObject:delegate]) {
+        [self.scrollListeners addObject:delegate];
+    }
+}
+
+- (void) removeScrollViewDelegate:(id<UIScrollViewDelegate>)delegate {
+    if ([self.scrollListeners containsObject:delegate]) {
+        [self.scrollListeners removeObject:delegate];
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+
+    if(self.scrollListeners) {
+        for(id<UIScrollViewDelegate> observer in self.scrollListeners) {
+            if (observer) {
+                [observer scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
+            }
+        }
+    }
 }
 
 #pragma mark - Table view data source
@@ -116,15 +158,15 @@ static NSString *kCellAlbumIdentifier = @"kCellAlbumIdentifier";
     TWAlbum *assetGroup = self.assetGroups[indexPath.row];
     UIImage *image = assetGroup.thumbnailImage;
     cell.imageView.image = image;
-    cell.textLabel.text = [assetGroup.assetGroup valueForProperty:ALAssetsGroupPropertyName];
-    cell.detailTextLabel.text = [NSNumber numberWithInteger:[assetGroup.assetGroup numberOfAssets]].stringValue;
+    cell.textLabel.text = assetGroup.albumName;
+    cell.detailTextLabel.text = assetGroup.numberOfAssets.stringValue;
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(self.delegate) {
-        [self.delegate albumSelected:((TWAlbum*)self.assetGroups[indexPath.row]).assetGroup];
+    if(self.albumListTableViewDelegate) {
+        [self.albumListTableViewDelegate albumSelected:((TWAlbum*)self.assetGroups[indexPath.row])];
     }
 }
 @end

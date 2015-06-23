@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+#import "TWAlbum.h"
 
 @protocol TWPhotoCollectionDelegate <NSObject>
 
@@ -28,8 +28,11 @@
  */
 @property (nonatomic, strong) NSURL *imagePreselectURL;
 
-@property (nonatomic, strong) ALAssetsGroup *selectedAssetGroup;
+@property (nonatomic, strong) TWAlbum *selectedAssetGroup;
 
-@property (nonatomic, assign) id<TWPhotoCollectionDelegate> delegate;
+@property (nonatomic, assign) id<TWPhotoCollectionDelegate> photoCollectiondelegate;
+
+- (void) addScrollViewDelegate:(id<UIScrollViewDelegate>)delegate;
+- (void) removeScrollViewDelegate:(id<UIScrollViewDelegate>)delegate;
 
 @end

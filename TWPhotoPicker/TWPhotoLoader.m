@@ -26,9 +26,9 @@
     return loader;
 }
 
-+ (void)loadAllPhotosInGroup:(ALAssetsGroup*) group andCompletion:(void (^)(NSArray *photos, NSError *error))completion {
++ (void)loadAllPhotosInGroup:(NSURL*) groupURL andCompletion:(void (^)(NSArray *photos, NSError *error))completion {
     [[TWPhotoLoader sharedLoader] setLoadBlock:completion];
-    [[TWPhotoLoader sharedLoader] startLoadingWithGroup:group];
+    [[TWPhotoLoader sharedLoader] startLoadingWithGroup:groupURL];
 }
 
 + (void)loadAllPhotos:(void (^)(NSArray *photos, NSError *error))completion {
@@ -36,20 +36,26 @@
     [[TWPhotoLoader sharedLoader] startLoading];
 }
 
-- (void)startLoadingWithGroup:(ALAssetsGroup*) group {
+- (void)startLoadingWithGroup:(NSURL*) group {
     [self.allPhotos removeAllObjects];
-    ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
-        if (result) {
-            TWPhoto *photo = [TWPhoto new];
-            photo.asset = result;
-            [self.allPhotos insertObject:photo atIndex:0];
-        }
-        
-    };
-
-    [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
     
-    self.loadBlock(self.allPhotos, nil);
+    [self.assetsLibrary groupForURL:group resultBlock:^(ALAssetsGroup *group) {
+        ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
+            if (result) {
+                TWPhoto *photo = [TWPhoto new];
+                photo.asset = result;
+                [self.allPhotos insertObject:photo atIndex:0];
+            }
+    
+        };
+    
+        [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
+    
+        self.loadBlock(self.allPhotos, nil);
+        
+    } failureBlock:^(NSError *error) {
+        NSLog(@"Failed to load photos");
+    }];
 }
 
 - (void)startLoading {
