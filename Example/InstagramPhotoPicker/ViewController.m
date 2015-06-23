@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "TWPhotoPickerController.h"
+#import "TWAssetAction.h"
 
 @interface ViewController ()
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
@@ -41,6 +42,16 @@
         self.imageView.image = image;
         self.originalAssetURL = originalAssetURL;
     };
+    
+    TWAssetAction *originalBackground = [[TWAssetAction alloc] init];
+    originalBackground.simpleBlock = ^{
+        
+        [self dismissViewControllerAnimated:YES completion:NULL];
+    };
+    
+    originalBackground.assetImage = [UIImage imageNamed:@"TWPhotoPicker.bundle/cameraroll-picker-grip.png"];
+    photoPicker.additionalAssets = @[originalBackground];
+    
     
     [self presentViewController:photoPicker animated:YES completion:NULL];
 }

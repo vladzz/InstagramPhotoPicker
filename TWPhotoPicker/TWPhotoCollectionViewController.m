@@ -95,6 +95,13 @@ static NSUInteger kHeaderHeight = 44;
     loadBlock photoBlock = ^(NSArray *photos, NSError *error) {
         if (!error) {
             self.assets = [NSMutableArray arrayWithArray:photos];
+
+            NSArray *extraActions = [NSArray array];
+            
+            if(self.photoCollectiondelegate && [self.photoCollectiondelegate respondsToSelector:@selector(extraActions)]) {
+                extraActions =[extraActions arrayByAddingObjectsFromArray:[self.photoCollectiondelegate extraActions]];
+            }
+            
             if (self.assets.count) {
                 if(self.imagePreselectURL) {
                     
@@ -108,14 +115,14 @@ static NSUInteger kHeaderHeight = 44;
                     if(foundIndex != NSNotFound) {
                         TWPhoto *asset = ((TWPhoto*)self.assets[foundIndex]);
                         if(self.photoCollectiondelegate) {
-                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:(foundIndex + self.assets.count) inSection:0];
+                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:(foundIndex + extraActions.count) inSection:0];
                             self.selectedIndexPath = pathToSelect;
                             [self.photoCollectiondelegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     } else {
                         TWPhoto *firstPhoto = self.assets[0];
                         if(self.photoCollectiondelegate) {
-                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0+self.assets.count inSection:0];
+                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0+extraActions.count inSection:0];
                             self.selectedIndexPath = pathToSelect;
                             [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
@@ -123,17 +130,15 @@ static NSUInteger kHeaderHeight = 44;
                 } else {
                     TWPhoto *firstPhoto = self.assets[0];
                     if(self.photoCollectiondelegate) {
-                        NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0+self.assets.count inSection:0];
+                        NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0+extraActions.count inSection:0];
                         self.selectedIndexPath = pathToSelect;
                         [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                     }
                 }
             }
             
-            if(self.photoCollectiondelegate && [self.photoCollectiondelegate respondsToSelector:@selector(extraActions)]) {
-                [self loadExtraActions:[self.photoCollectiondelegate extraActions]];
-                
-                
+            if(extraActions.count) {
+                [self loadExtraActions:extraActions];
             }
             
             self.imagePreselectURL = nil;
