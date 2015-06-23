@@ -7,6 +7,8 @@
 //
 
 #import "TWImageScrollView.h"
+#include <math.h>
+
 #define rad(angle) ((angle) / 180.0 * M_PI)
 
 @interface TWImageScrollView ()<UIScrollViewDelegate>
@@ -137,6 +139,8 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
         frame.size.height = self.bounds.size.height;
         frame.size.width = (self.bounds.size.height / image.size.height) * image.size.width;
     }
+    
+    if(!isnan(frame.origin.x) && !isnan(frame.origin.y) && !isnan(frame.size.width) && !isnan(frame.size.height))
     self.imageView.frame = frame;
     [self configureForImageSize:self.imageView.bounds.size];
 }
