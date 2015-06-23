@@ -108,14 +108,14 @@ static NSUInteger kHeaderHeight = 44;
                     if(foundIndex != NSNotFound) {
                         TWPhoto *asset = ((TWPhoto*)self.assets[foundIndex]);
                         if(self.photoCollectiondelegate) {
-                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:foundIndex inSection:0];
+                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:(foundIndex + self.assets.count) inSection:0];
                             self.selectedIndexPath = pathToSelect;
                             [self.photoCollectiondelegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     } else {
                         TWPhoto *firstPhoto = self.assets[0];
                         if(self.photoCollectiondelegate) {
-                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
+                            NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0+self.assets.count inSection:0];
                             self.selectedIndexPath = pathToSelect;
                             [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
@@ -123,7 +123,7 @@ static NSUInteger kHeaderHeight = 44;
                 } else {
                     TWPhoto *firstPhoto = self.assets[0];
                     if(self.photoCollectiondelegate) {
-                        NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
+                        NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0+self.assets.count inSection:0];
                         self.selectedIndexPath = pathToSelect;
                         [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                     }
@@ -138,7 +138,9 @@ static NSUInteger kHeaderHeight = 44;
             
             self.imagePreselectURL = nil;
             [self.collectionView reloadData];
-            [self collectionView:self.collectionView didSelectItemAtIndexPath:self.selectedIndexPath];
+            if(self.selectedIndexPath) {
+                [self collectionView:self.collectionView didSelectItemAtIndexPath:self.selectedIndexPath];
+            }
         } else {
             NSLog(@"Load Photos Error: %@", error);
         }
@@ -240,7 +242,7 @@ static NSUInteger kHeaderHeight = 44;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"selected cell at index path %ld", (long)indexPath.row);
+//    NSLog(@"selected cell at index path %ld", (long)indexPath.row);
     [self.collectionView deselectItemAtIndexPath:self.selectedIndexPath animated:YES];
 
     NSIndexPath *oldIndexPath = self.selectedIndexPath;

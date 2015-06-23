@@ -294,7 +294,7 @@
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    NSLog(@"velocity:%f", velocity.y);
+//    NSLog(@"velocity:%f", velocity.y);
     if (velocity.y >= 2.0 && self.topView.frame.origin.y == 0) {
         [self tapGestureAction:nil];
     }
