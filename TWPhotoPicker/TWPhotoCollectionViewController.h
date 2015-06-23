@@ -35,4 +35,6 @@
 - (void) addScrollViewDelegate:(id<UIScrollViewDelegate>)delegate;
 - (void) removeScrollViewDelegate:(id<UIScrollViewDelegate>)delegate;
 
+- (void)loadData;
+
 @end

@@ -21,6 +21,8 @@ static NSUInteger kHeaderHeight = 44;
 
 @property(nonatomic, strong) NSMutableArray *scrollListeners;
 
+@property(nonatomic, strong) NSIndexPath *selectedIndexPath;
+
 @end
 
 @implementation TWPhotoCollectionViewController
@@ -41,7 +43,7 @@ static NSUInteger kHeaderHeight = 44;
 
     self.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionView.allowsMultipleSelection = NO;
-    
+    self.collectionView.delaysContentTouches = NO;
     // Register cell classes
     [self.collectionView registerClass:[TWPhotoCollectionViewCell class] forCellWithReuseIdentifier:kPhotoCollectionViewCellIdentifier];
     [self.collectionView registerClass:[TWPhotoCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPhotoCollectionReusableView];
@@ -51,19 +53,6 @@ static NSUInteger kHeaderHeight = 44;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self loadPhotos];
-
-    NSNumber *number = nil;
-    int groupAll = 16;
-    
-    if(self.selectedAssetGroup) {
-        number = self.selectedAssetGroup.groupType;
-    }
-    
-    if(self.selectedAssetGroup == nil || [number intValue] == groupAll) {
-        if(self.collectionView.contentSize.height+ kHeaderHeight > CGRectGetHeight(self.collectionView.frame))
-        self.collectionView.contentOffset = CGPointMake(0.0f, kHeaderHeight);
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -77,6 +66,22 @@ static NSUInteger kHeaderHeight = 44;
     [super viewDidLayoutSubviews];
     self.view.frame = self.view.superview.bounds;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+}
+
+- (void)loadData {
+    [self loadPhotos];
+    
+    NSNumber *number = nil;
+    int groupAll = 16;
+    
+    if(self.selectedAssetGroup) {
+        number = self.selectedAssetGroup.groupType;
+    }
+    
+    if(self.selectedAssetGroup == nil || [number intValue] == groupAll) {
+        if(self.collectionView.contentSize.height+ kHeaderHeight > CGRectGetHeight(self.collectionView.frame))
+            [self.collectionView setContentOffset:CGPointMake(0.0f, kHeaderHeight) animated:NO];
+    }
 }
 
 - (NSMutableArray *)assets {
@@ -104,18 +109,16 @@ static NSUInteger kHeaderHeight = 44;
                         TWPhoto *asset = ((TWPhoto*)self.assets[foundIndex]);
                         if(self.photoCollectiondelegate) {
                             NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:foundIndex inSection:0];
-                            [self.collectionView selectItemAtIndexPath:pathToSelect
-                                                              animated:YES
-                                                        scrollPosition:UICollectionViewScrollPositionNone];
+                            [self collectionView:self.collectionView didSelectItemAtIndexPath:pathToSelect];
+                            self.selectedIndexPath = pathToSelect;
                             [self.photoCollectiondelegate didSelectPhoto:asset.originalImage atAssetURL:[asset.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     } else {
                         TWPhoto *firstPhoto = self.assets[0];
                         if(self.photoCollectiondelegate) {
                             NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
-                            [self.collectionView selectItemAtIndexPath:pathToSelect
-                                                              animated:YES
-                                                        scrollPosition:UICollectionViewScrollPositionNone];
+                            [self collectionView:self.collectionView didSelectItemAtIndexPath:pathToSelect];
+                            self.selectedIndexPath = pathToSelect;
                             [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                         }
                     }
@@ -123,9 +126,8 @@ static NSUInteger kHeaderHeight = 44;
                     TWPhoto *firstPhoto = self.assets[0];
                     if(self.photoCollectiondelegate) {
                         NSIndexPath *pathToSelect = [NSIndexPath indexPathForRow:0 inSection:0];
-                        [self.collectionView selectItemAtIndexPath:pathToSelect
-                                                          animated:YES
-                                                    scrollPosition:UICollectionViewScrollPositionNone];
+                        [self collectionView:self.collectionView didSelectItemAtIndexPath:pathToSelect];
+                            self.selectedIndexPath = pathToSelect;
                         [self.photoCollectiondelegate didSelectPhoto:firstPhoto.originalImage atAssetURL:[firstPhoto.asset valueForProperty:ALAssetPropertyAssetURL] andDropDraw:NO];
                     }
                 }
@@ -222,6 +224,11 @@ static NSUInteger kHeaderHeight = 44;
         cell.imageView.image = [self.assets[(NSUInteger) indexPath.row] thumbnailImage];
     }
     
+    if([self.selectedIndexPath isEqual:indexPath]) {
+        [cell setSelected:YES];
+    } else {
+        [cell setSelected:NO];
+    }
     return cell;
 }
 
@@ -236,7 +243,17 @@ static NSUInteger kHeaderHeight = 44;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"selected cell at index path %ld", (long)indexPath.row);
-        
+    [self.collectionView deselectItemAtIndexPath:self.selectedIndexPath animated:YES];
+
+    NSIndexPath *oldIndexPath = self.selectedIndexPath;
+    self.selectedIndexPath = indexPath;
+    
+    if(oldIndexPath) {
+        [self.collectionView reloadItemsAtIndexPaths:@[self.selectedIndexPath, oldIndexPath]];
+    } else {
+        [self.collectionView reloadItemsAtIndexPaths:@[self.selectedIndexPath]];
+    }
+    
     if([self.assets[(NSUInteger) indexPath.row] isKindOfClass:[TWAssetAction class]]) {
         TWAssetAction *action = self.assets[(NSUInteger) indexPath.row];
         

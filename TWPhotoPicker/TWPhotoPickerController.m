@@ -67,11 +67,13 @@
     [self.view insertSubview:self.containerVC.view belowSubview:self.topView];
     
     [self.photoCollectionVC addScrollViewDelegate:self];
+    [self.photoCollectionVC loadData];
     
     [self.containerVC addChildViewController:self.photoCollectionVC];
     [self.containerVC.view addSubview:self.photoCollectionVC.view];
     [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
     self.currentChildViewController = self.photoCollectionVC;
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -326,7 +328,6 @@
         self.albumListVC.view.transform = CGAffineTransformIdentity;
         
     } completion:^(BOOL finished) {
-        self.photoCollectionVC.view.transform = CGAffineTransformIdentity;
         [self.albumListVC didMoveToParentViewController:self.containerVC];
         [self.currentChildViewController removeFromParentViewController];
         [self.currentChildViewController didMoveToParentViewController:nil];
@@ -351,6 +352,7 @@
     [self.albumListVC removeScrollViewDelegate:self];
     self.photoCollectionVC.photoCollectiondelegate = self;
     self.photoCollectionVC.selectedAssetGroup = assetGroup;
+    [self.photoCollectionVC loadData];
     [self.photoCollectionVC addScrollViewDelegate:self];
     [self.containerVC addChildViewController:self.photoCollectionVC];
     [self.currentChildViewController willMoveToParentViewController:nil];
