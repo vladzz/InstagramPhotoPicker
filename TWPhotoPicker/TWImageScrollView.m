@@ -117,32 +117,34 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
 
 - (void)displayImage:(UIImage *)image andAssetURL:(NSURL*) assetURL
 {
-    //Set the asset URL
-    self.assetURL = assetURL;
-    // clear the previous image
-    [self.imageView removeFromSuperview];
-    self.imageView = nil;
-    
-    // reset our zoomScale to 1.0 before doing any further calculations
-    self.zoomScale = 1.0;
-    
-    // make a new UIImageView for the new image
-    self.imageView = [[UIImageView alloc] initWithImage:image];
-    self.imageView.clipsToBounds = NO;
-    [self addSubview:self.imageView];
-    
-    CGRect frame = self.imageView.frame;
-    if (image.size.height > image.size.width) {
-        frame.size.width = self.bounds.size.width;
-        frame.size.height = (self.bounds.size.width / image.size.width) * image.size.height;
-    } else {
-        frame.size.height = self.bounds.size.height;
-        frame.size.width = (self.bounds.size.height / image.size.height) * image.size.width;
+    if(image) {
+        //Set the asset URL
+        self.assetURL = assetURL;
+        // clear the previous image
+        [self.imageView removeFromSuperview];
+        self.imageView = nil;
+        
+        // reset our zoomScale to 1.0 before doing any further calculations
+        self.zoomScale = 1.0;
+        
+        // make a new UIImageView for the new image
+        self.imageView = [[UIImageView alloc] initWithImage:image];
+        self.imageView.clipsToBounds = NO;
+        [self addSubview:self.imageView];
+        
+        CGRect frame = self.imageView.frame;
+        if (image.size.height > image.size.width) {
+            frame.size.width = self.bounds.size.width;
+            frame.size.height = (self.bounds.size.width / image.size.width) * image.size.height;
+        } else {
+            frame.size.height = self.bounds.size.height;
+            frame.size.width = (self.bounds.size.height / image.size.height) * image.size.width;
+        }
+        
+        if(!isnan(frame.origin.x) && !isnan(frame.origin.y) && !isnan(frame.size.width) && !isnan(frame.size.height))
+        self.imageView.frame = frame;
+        [self configureForImageSize:self.imageView.bounds.size];
     }
-    
-    if(!isnan(frame.origin.x) && !isnan(frame.origin.y) && !isnan(frame.size.width) && !isnan(frame.size.height))
-    self.imageView.frame = frame;
-    [self configureForImageSize:self.imageView.bounds.size];
 }
 
 - (void)configureForImageSize:(CGSize)imageSize

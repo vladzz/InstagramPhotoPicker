@@ -36,25 +36,32 @@
     [[TWPhotoLoader sharedLoader] startLoading];
 }
 
-- (void)startLoadingWithGroup:(NSURL*) group {
+- (void)startLoadingWithGroup:(NSURL*) aGroup {
     [self.allPhotos removeAllObjects];
     
-    [self.assetsLibrary groupForURL:group resultBlock:^(ALAssetsGroup *group) {
-        ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
-            if (result) {
-                TWPhoto *photo = [TWPhoto new];
-                photo.asset = result;
-                [self.allPhotos insertObject:photo atIndex:0];
-            }
-    
-        };
-    
-        [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
-    
-        self.loadBlock(self.allPhotos, nil);
+    [self.assetsLibrary groupForURL:aGroup resultBlock:^(ALAssetsGroup *group) {
+        if(group) {
+            ALAssetsFilter *onlyPhotosFilter = [ALAssetsFilter allPhotos];
+            [group setAssetsFilter:onlyPhotosFilter];
+            
+            ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                if (result) {
+                    TWPhoto *photo = [TWPhoto new];
+                    photo.asset = result;
+                    [self.allPhotos insertObject:photo atIndex:0];
+                }
         
+            };
+        
+            [group enumerateAssetsUsingBlock:assetsEnumerationBlock];
+        
+            self.loadBlock(self.allPhotos, nil);
+        } else {
+            self.loadBlock(self.allPhotos, nil);
+        }
     } failureBlock:^(NSError *error) {
         NSLog(@"Failed to load photos");
+            self.loadBlock(self.allPhotos, error);
     }];
 }
 
