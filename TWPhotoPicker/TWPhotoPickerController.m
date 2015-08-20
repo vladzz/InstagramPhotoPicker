@@ -220,7 +220,9 @@
 
 - (void)cropAction {
     if (self.cropBlock && !(self.imagePreselectURL && [self.imagePreselectURL isEqual:self.imageScrollView.assetURL])) {
-        self.cropBlock(self.imageScrollView.capture, self.imageScrollView.assetURL);
+        dispatch_async( dispatch_get_main_queue(), ^{
+            self.cropBlock(self.imageScrollView.capture, self.imageScrollView.assetURL);
+        });
     }
     [self backAction];
 }
