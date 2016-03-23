@@ -229,7 +229,6 @@
             self.cropBlock(self.imageScrollView.capture, self.imageScrollView.assetURL);
         });
     }
-    [self backAction];
 }
 
 - (void)panGestureAction:(UIPanGestureRecognizer *)panGesture {
