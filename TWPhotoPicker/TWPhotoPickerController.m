@@ -48,7 +48,7 @@
 {
     self = [super init];
     if (self) {
-        self.customBackButtonImage = [UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"];
+        self.customBackButtonImage = [UIImage my_bundleImageNamed:@"left.png"];
         self.cropButtonTitleColor = [UIColor cyanColor];
         self.cropButtonFont = [UIFont boldSystemFontOfSize:14.0f];
         self.cropButtonTitle = @"OK";
@@ -147,7 +147,7 @@
         dragView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self.topView addSubview:dragView];
         
-        UIImage *img = [UIImage imageNamed:@"TWPhotoPicker.bundle/cameraroll-picker-grip.png"];
+        UIImage *img = [UIImage my_bundleImageNamed:@"cameraroll-picker-grip.png"];
         rect = CGRectMake((CGRectGetWidth(dragView.bounds)-img.size.width)/2, (CGRectGetHeight(dragView.bounds)-img.size.height)/2, img.size.width, img.size.height);
         UIImageView *gripView = [[UIImageView alloc] initWithFrame:rect];
         gripView.image = img;
@@ -168,7 +168,7 @@
         
         self.maskView = [[UIImageView alloc] initWithFrame:rect];
         
-        self.maskView.image = [UIImage imageNamed:@"TWPhotoPicker.bundle/straighten-grid.png"];
+        self.maskView.image = [UIImage my_bundleImageNamed:@"straighten-grid.png"];
         [self.topView insertSubview:self.maskView aboveSubview:self.imageScrollView];
     }
     return _topView;
