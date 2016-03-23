@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.screenshots  = "https://raw.githubusercontent.com/vladzz/InstagramPhotoPicker/master/Screenshots/Screenshot01.png"
   s.license      = "MIT"
   s.author       = { "wenzhaot" => "tanwenzhao1025@gmail.com", "vladzz" => "vladzz@gmail.com" }
-  s.source       = { :git => "https://github.com/vladzz/InstagramPhotoPicker.git", :tag => s.version.to_s }
+  s.source       = { :git => "https://github.com/vladzz/InstagramPhotoPicker.git"}
   s.platform     = :ios, '7.0'
   s.requires_arc = true
 
