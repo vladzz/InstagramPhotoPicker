@@ -56,6 +56,7 @@
     }
     return self;
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -74,6 +75,10 @@
     [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
     self.currentChildViewController = self.photoCollectionVC;
     
+    self.customBackButtonImage = [UIImage my_bundleImageNamed:@"left.png"];
+    self.cropButtonTitleColor = [UIColor cyanColor];
+    self.cropButtonFont = [UIFont boldSystemFontOfSize:14.0f];
+    self.cropButtonTitle = @"OK";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
