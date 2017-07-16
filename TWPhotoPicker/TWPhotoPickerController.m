@@ -48,7 +48,7 @@
 {
     self = [super init];
     if (self) {
-        self.customBackButtonImage = [UIImage imageNamed:@"TWPhotoPicker.bundle/left.png"];
+        self.customBackButtonImage = [UIImage my_bundleImageNamed:@"left.png"];
         self.cropButtonTitleColor = [UIColor cyanColor];
         self.cropButtonFont = [UIFont boldSystemFontOfSize:14.0f];
         self.cropButtonTitle = @"OK";
@@ -56,9 +56,15 @@
     }
     return self;
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.customBackButtonImage = [UIImage my_bundleImageNamed:@"left.png"];
+    self.cropButtonTitleColor = [UIColor cyanColor];
+    self.cropButtonFont = [UIFont boldSystemFontOfSize:14.0f];
+    self.cropButtonTitle = @"OK";
+
     [self addChildViewController:self.containerVC];
     [self.containerVC didMoveToParentViewController:self];
     
@@ -73,7 +79,6 @@
     [self.containerVC.view addSubview:self.photoCollectionVC.view];
     [self.photoCollectionVC didMoveToParentViewController:self.containerVC];
     self.currentChildViewController = self.photoCollectionVC;
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -111,35 +116,17 @@
         self.topView.backgroundColor = [UIColor clearColor];
         self.topView.clipsToBounds = YES;
         
-        rect = CGRectMake(0, 0, CGRectGetWidth(self.topView.bounds), handleHeight);
-        UIView *navView = [[UIView alloc] initWithFrame:rect];//26 29 33
-        navView.backgroundColor = [[UIColor colorWithRed:36.0/255 green:37.0/255 blue:41.0/255 alpha:1] colorWithAlphaComponent:.8f];
+        UINavigationItem *navItem = [[UINavigationItem alloc] initWithTitle:@"カメラロール"];
+        rect = CGRectMake(0, 0, CGRectGetWidth(self.topView.bounds), 64.0);
+        UINavigationBar *navView = [[UINavigationBar alloc] initWithFrame:rect];
+        navView.backgroundColor = [UIColor whiteColor];
+        [navView pushNavigationItem:navItem animated:false];
         [self.topView addSubview:navView];
         
-        rect = CGRectMake(0, 0, 60, CGRectGetHeight(navView.bounds));
-        self.backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.backBtn.frame = rect;
-        self.backBtn.imageEdgeInsets = UIEdgeInsetsMake(10., 20., 10., 20.);
-        [self.backBtn setImage:self.customBackButtonImage forState:UIControlStateNormal];
-        [self.backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
-        [navView addSubview:self.backBtn];
-        
-        rect = CGRectMake((CGRectGetWidth(navView.bounds)-200)/2, 0, 200, CGRectGetHeight(navView.bounds));
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
-        titleLabel.text = self.title;
-        titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.textColor = [UIColor whiteColor];
-        titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
-        [navView addSubview:titleLabel];
-        
-        rect = CGRectMake(CGRectGetWidth(navView.bounds)-80, 0, 80, CGRectGetHeight(navView.bounds));
-        self.cropBtn = [[UIButton alloc] initWithFrame:rect];
-        [self.cropBtn setTitle:self.cropButtonTitle forState:UIControlStateNormal];
-        [self.cropBtn.titleLabel setFont:self.cropButtonFont];
-        [self.cropBtn setTitleColor:self.cropButtonTitleColor forState:UIControlStateNormal];
-        [self.cropBtn addTarget:self action:@selector(cropAction) forControlEvents:UIControlEventTouchUpInside];
-        [navView addSubview:self.cropBtn];
+        UIBarButtonItem *cancelBarbutton = [[UIBarButtonItem alloc] initWithTitle:@"キャンセル" style: UIBarButtonItemStylePlain target:self action: @selector(backAction)];
+        UIBarButtonItem *doneBarbutton = [[UIBarButtonItem alloc] initWithTitle:@"次へ" style: UIBarButtonItemStylePlain target:self action: @selector(cropAction)];
+        navItem.leftBarButtonItem = cancelBarbutton;
+        navItem.rightBarButtonItem = doneBarbutton;
         
         rect = CGRectMake(0, CGRectGetHeight(self.topView.bounds)-handleHeight, CGRectGetWidth(self.topView.bounds), handleHeight);
         UIView *dragView = [[UIView alloc] initWithFrame:rect];
@@ -147,7 +134,7 @@
         dragView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self.topView addSubview:dragView];
         
-        UIImage *img = [UIImage imageNamed:@"TWPhotoPicker.bundle/cameraroll-picker-grip.png"];
+        UIImage *img = [UIImage my_bundleImageNamed:@"cameraroll-picker-grip.png"];
         rect = CGRectMake((CGRectGetWidth(dragView.bounds)-img.size.width)/2, (CGRectGetHeight(dragView.bounds)-img.size.height)/2, img.size.width, img.size.height);
         UIImageView *gripView = [[UIImageView alloc] initWithFrame:rect];
         gripView.image = img;
@@ -168,7 +155,7 @@
         
         self.maskView = [[UIImageView alloc] initWithFrame:rect];
         
-        self.maskView.image = [UIImage imageNamed:@"TWPhotoPicker.bundle/straighten-grid.png"];
+        self.maskView.image = [UIImage my_bundleImageNamed:@"straighten-grid.png"];
         [self.topView insertSubview:self.maskView aboveSubview:self.imageScrollView];
     }
     return _topView;
@@ -224,7 +211,6 @@
             self.cropBlock(self.imageScrollView.capture, self.imageScrollView.assetURL);
         });
     }
-    [self backAction];
 }
 
 - (void)panGestureAction:(UIPanGestureRecognizer *)panGesture {
